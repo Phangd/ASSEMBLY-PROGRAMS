@@ -1,0 +1,112 @@
+SCANREMOTE:
+		LD	        A,T_REMOTE1
+		HSUBIA		D'250'
+		SNZB	    STATUS,C
+		SZINCR	    T_REMOTE1
+		LD	        A,T_REMOTE2
+		HSUBIA		D'250'
+		SNZB	    STATUS,C
+		SZINCR	    T_REMOTE2
+		LD	        A,T_REMOTE3
+		HSUBIA		D'250'
+		SNZB	    STATUS,C
+		SZINCR	    T_REMOTE3
+SCANREMOTE0:
+		SNZB	    F_REMOTE
+		JP	        END_SCANREMOTE0
+		CLRB	    F_REMOTE
+		CLR	        T_REMOTE3
+		LD	        A,REMOTE_DATA1
+		XORIA		0DH
+		SNZB	    STATUS,Z
+		JP	        END_SCANREMOTE3
+		LD	        A,REMOTE_DATA2	; 按键松开
+		XORIA		80H
+		SZB     	STATUS,Z
+		JP	        OFF_YKKEY
+		LD	        A,REMOTE_DATA2	; 连续接收两串相同码？
+		XORA		REMOTE_BUF
+		SZB	        STATUS,Z
+		JP	        YKKEY_JUD
+YKKEY_FIRST:
+		LD	        A,REMOTE_DATA2
+		LD	        REMOTE_BUF,A
+		JP	        END_SCANREMOTE1
+YKKEY_JUD:
+		SZB	        F_ON_REMOTE			; 按键长按
+		JP	        OLDYK
+		LD	        A,T_REMOTE2	; <20ms?   ; 两串码的接收间隔为27ms？
+		HSUBIA		D'10';3
+		SNZB	    STATUS,C
+		JP	        END_SCANREMOTE3
+		LD	        A,T_REMOTE2	; >40ms?
+		HSUBIA		D'20';5
+		SZB	        STATUS,C
+		JP	        END_SCANREMOTE3
+		JP	        NEWYK
+OLDYK:							; >80ms?
+		JP	        END_SCANREMOTE2			;无遥控长按功能
+		LD	        A,T_REMOTE1
+		HSUBIA		D'220';60
+		SNZB	    STATUS,C
+		JP	        END_SCANREMOTE1;END_SCANREMOTE
+		CLR	        T_REMOTE1
+		LD	        A,REMOTE_DATA2
+		XORIA		88H
+		SZB	        STATUS,Z
+		JP	        YKKEY_TIMER;YKKEY_TIMER_UP
+		JP	        END_SCANREMOTE2
+NEWYK:							; 键码判断
+		SETB	    F_ON_REMOTE
+		LD	        A,REMOTE_DATA2
+		XORIA		81H
+		SZB     	STATUS,Z
+		JP	        YKKEY_POWER
+		LD	        A,REMOTE_DATA2
+		XORIA		82H
+		SZB	        STATUS,Z
+		JP	        YKKEY_SPEED
+		LD	        A,REMOTE_DATA2
+		XORIA		88H
+		SZB	        STATUS,Z
+		JP	        YKKEY_TIMER
+		LD	    	A,REMOTE_DATA2
+		XORIA		90H
+		SZB     	STATUS,Z
+		JP	    	YKKEY_OSC
+YKKEY_POWER:
+		CALL	   	KEY_ONOFF
+		JP	       	END_YKKEY
+YKKEY_SPEED:	
+		CALL	   	KEY_SPEED
+		JP	       	END_YKKEY
+YKKEY_TIMER:	
+		CALL	   	KEY_TIMER
+		JP	       	END_YKKEY
+YKKEY_OSC:
+		CALL		KEY_OSC
+		JP	       	END_YKKEY
+END_YKKEY:	
+		JP	       	END_SCANREMOTE2
+OFF_YKKEY:	
+		CLRB	   	F_ON_REMOTE
+END_SCANREMOTE2:	
+		CLR	       	T_REMOTE1
+END_SCANREMOTE1:	
+		CLR	       	T_REMOTE2
+		JP	       	END_SCANREMOTE
+END_SCANREMOTE3:
+		CLR	       	REMOTE_BUF
+		CLR	       	T_REMOTE1
+		CLR	       	T_REMOTE2
+		JP	       	END_SCANREMOTE
+END_SCANREMOTE0:	
+		LD	       	A,T_REMOTE3
+		NOP	
+		HSUBIA     	D'25';13
+		SNZB	   	STATUS,C
+		JP	       	END_SCANREMOTE
+		CLR        	REMOTE_BUF
+		CLRB	   	F_ON_REMOTE
+END_SCANREMOTE:
+		RET
