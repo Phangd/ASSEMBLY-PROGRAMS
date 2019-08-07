@@ -5,11 +5,11 @@
 		FLAG2		    EQU 	?
 		SPEED		    EQU 	?
 		T2MS_TIMER	    EQU 	?
-		T250MS_TIMER	EQU 	?
+		T250MS_TIMER	    EQU 	?
 		T_SEC0		    EQU 	?
-		TIME_SEC		EQU 	?
-		TIME_MIN		EQU 	?
-		TIME_HOUR		EQU 	?
+		TIME_SEC	    EQU 	?
+		TIME_MIN	    EQU 	?
+		TIME_HOUR	    EQU 	?
 		KEY_VALUE	    EQU 	?
 		KEY_VALUE0	    EQU 	?
 		KEY_DELAY	    EQU 	?
@@ -113,6 +113,7 @@ REMOTE_RECEIVE:
 		HSUBIA  	D'200'
 		SNZB		STATUS,C
 		SZINCR 		TN
+		NOP
 		SNZB		REMOTE
 		JP	    	YK_NPULSE
 YK_PPULSE:	
