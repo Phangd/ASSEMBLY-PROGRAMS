@@ -1,20 +1,3 @@
-;*****************************************************;
-;*****************************************************;
-;		*Copyright (c) £ºÉîÛÚÍØÆÕ°¬¿Æ¼¼ÓÐÏÞ¹«Ë¾		  ;
-;		*All right reserved							  ;
-;=====================================================;
-;		*ÎÄ¼þÃû³Æ£ºTP-15031.ASM   		  			  ;
-;		*»ú    ÐÍ£º									  ;
-;		* M C U	 £ºCMS6053D							  ;
-;		*Ê±ÖÓ·½Ê½£º									  ;
-;		*CHECKSUM£ºIHRC	8M							  ;
-;		*µ±Ç°°æ±¾£º0.0								  ;
-;		*×÷    Õß£ºPD								  ;
-;		*±àÐ´ÈÕÆÚ£º20190808							  ;
-;		*Íê³ÉÈÕÆÚ£º									  ;
-;		*ÐÞ¸ÄÈÕÆÚ£º									  ;
-;		*ÐÞ¸ÄÈÕÆÚ£º									  ;
-;*****************************************************;
 		#INCLUDE	CMS6053D.H
 ;*****************************************************;
 		FLAG0		EQU	?
@@ -519,11 +502,11 @@ SCANREMOTE0:
 		XORIA		0DH
 		SNZB	    STATUS,Z
 		JP	        END_SCANREMOTE3
-		LD	        A,REMOTE_DATA2	; °´¼üËÉ¿ª
+		LD	        A,REMOTE_DATA2	; æŒ‰é”®æ¾å¼€
 		XORIA		80H
 		SZB     	STATUS,Z
 		JP	        OFF_YKKEY
-		LD	        A,REMOTE_DATA2	; Á¬Ðø½ÓÊÕÁ½´®ÏàÍ¬Âë£¿
+		LD	        A,REMOTE_DATA2	; è¿žç»­æŽ¥æ”¶ä¸¤ä¸²ç›¸åŒç ï¼Ÿ
 		XORA		REMOTE_BUF
 		SZB	        STATUS,Z
 		JP	        YKKEY_JUD
@@ -532,9 +515,9 @@ YKKEY_FIRST:
 		LD	        REMOTE_BUF,A
 		JP	        END_SCANREMOTE1
 YKKEY_JUD:
-		SZB	        F_ON_REMOTE			; °´¼ü³¤°´
+		SZB	        F_ON_REMOTE			; æŒ‰é”®é•¿æŒ‰
 		JP	        OLDYK
-		LD	        A,T_REMOTE2	; <20ms?   ; Á½´®ÂëµÄ½ÓÊÕ¼ä¸ôÎª27ms£¿
+		LD	        A,T_REMOTE2	; <20ms?   ; ä¸¤ä¸²ç çš„æŽ¥æ”¶é—´éš”ä¸º27msï¼Ÿ
 		HSUBIA		D'10';3
 		SNZB	    STATUS,C
 		JP	        END_SCANREMOTE3
@@ -544,7 +527,7 @@ YKKEY_JUD:
 		JP	        END_SCANREMOTE3
 		JP	        NEWYK
 OLDYK:							; >80ms?
-		JP	        END_SCANREMOTE2			;ÎÞÒ£¿Ø³¤°´¹¦ÄÜ
+		JP	        END_SCANREMOTE2			;æ— é¥æŽ§é•¿æŒ‰åŠŸèƒ½
 		LD	        A,T_REMOTE1
 		HSUBIA		D'220';60
 		SNZB	    STATUS,C
@@ -555,7 +538,7 @@ OLDYK:							; >80ms?
 		SZB	        STATUS,Z
 		JP	        YKKEY_TIMER;YKKEY_TIMER_UP
 		JP	        END_SCANREMOTE2
-NEWYK:							; ¼üÂëÅÐ¶Ï
+NEWYK:							; é”®ç åˆ¤æ–­
 		SETB	    F_ON_REMOTE
 		LD	        A,REMOTE_DATA2
 		XORIA		81H
