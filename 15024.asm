@@ -1,4 +1,4 @@
-		#INCLUDE		CMS6053D.H    
+		#INCLUDE	    CMS6053D.H    
 ;*****************************************************;				
 		FLAG0		    EQU 	?
 		FLAG1		    EQU 	?
@@ -21,21 +21,21 @@
 		DISP_NUM	    EQU 	?
 		LED_BUF1	    EQU 	?
 		LED_BUF2	    EQU 	?
-		TN		        EQU 	?
-		LEDN			EQU		?
+		TN		    EQU 	?
+		LEDN	            EQU		?
 		REMOTE_NUM	    EQU 	?
 		T_REMOTE1	    EQU 	?
 		T_REMOTE2	    EQU 	?
 		T_REMOTE3	    EQU 	?
 		CODE1		    EQU 	?
 		CODE2		    EQU 	?
-		REMOTE_DATA1	EQU 	?
-		REMOTE_DATA2	EQU 	?
+		REMOTE_DATA1	    EQU 	?
+		REMOTE_DATA2	    EQU 	?
 		REMOTE_BUF	    EQU 	?
 		T_OUTPUT	    EQU 	?
 		T_FLASH		    EQU 	?
 		SPEED_BUF	    EQU 	?
-		KEY_DELAY2		EQU 	?
+		KEY_DELAY2	    EQU 	?
 ;*****************************************************;
 ;				Bit Flag Definition					  ;	
 ;*****************************************************;
@@ -53,7 +53,7 @@
 		F_ON_REMOTE		EQU	FLAG1,2
 		F_SPEED_CH		EQU	FLAG1,3
 		F_RISE_YK		EQU	FLAG1,4
-		F_SEND	    	EQU	FLAG1,5
+		F_SEND	    	        EQU	FLAG1,5
 		F_BIT_END		EQU	FLAG1,6
 		F_SLEEP			EQU	FLAG1,7
 
