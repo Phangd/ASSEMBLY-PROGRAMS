@@ -6,7 +6,7 @@
 		FLAG2		EQU ?
 		SPEED		EQU ?
 		T2MS_TIMER	EQU ?
-		T_T300MS		EQU	?
+		T_T300MS	EQU ?
 		T250MS_TIMER	EQU ?
 		T_SEC0		EQU ?
 		TIME_SEC	EQU ?
@@ -31,23 +31,23 @@
 		T_REMOTE3	EQU ?
 		CODE1		EQU ?
 		CODE2		EQU ?
-		REMOTE_DATA1	EQU	?
+		REMOTE_DATA1	EQU ?
 		REMOTE_DATA2	EQU ?
 		REMOTE_BUF	EQU ?
 		T_OUTPUT	EQU ?
 		T_FLASH		EQU ?
 		SPEED_BUF	EQU ?
 		KEY_DELAY2	EQU ?
-		PWM_DATA	EQU	?
-		PWM_BUF		EQU	?
+		PWM_DATA	EQU ?
+		PWM_BUF		EQU ?
 ;*****************************************************;
-;				Bit Flag Definition					  ;	
+;				Bit Flag Definition   ;	
 ;*****************************************************;
 		F_ONOFF		EQU	FLAG0,0
 		F_OUT_OSC	EQU	FLAG0,1
-		F_OUT_HIG   EQU	FLAG0,2
-		F_OUT_MID   EQU	FLAG0,3
-		F_OUT_LOW   EQU	FLAG0,4
+		F_OUT_HIG   	EQU	FLAG0,2
+		F_OUT_MID   	EQU	FLAG0,3
+		F_OUT_LOW   	EQU	FLAG0,4
 		F_OUTPUT   	EQU	FLAG0,5
 		F_ONKEY		EQU	FLAG0,6
 		F_REMOTE	EQU	FLAG0,7
@@ -62,7 +62,7 @@
 		REMOTE   	EQU	P1,1
 	
 		LED_SEG1  	EQU	P1,0
-		LED_SEG2    EQU	P2,0
+		LED_SEG2    	EQU	P2,0
 		LED_SEG3 	EQU	P2,1
 	
 		LED_COM1	EQU	P5,4
@@ -74,7 +74,7 @@
 	
 		SW_TIMER	EQU	P0,0
 ;*****************************************************;										   
-;				Code section
+;				Code section	      ;
 ;*****************************************************;
 ;***************PROGRAM ENTRY*************************;                         
 		ORG			0000H					
