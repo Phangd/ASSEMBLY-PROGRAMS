@@ -31,19 +31,19 @@
 		REMOTE_NUM	EQU		?
 		CODE1		EQU		?
 		CODE2		EQU		?
-		TN			EQU		?
-		REMOTE_BUF  EQU		?
-		T_REMOTE1   EQU		?
-		T_REMOTE2   EQU		?
-		T_REMOTE3   EQU		?
+		TN		EQU		?
+		REMOTE_BUF      EQU		?
+		T_REMOTE1       EQU		?
+		T_REMOTE2       EQU		?
+		T_REMOTE3       EQU		?
 		BIT_CONT	EQU		?
-		BIT_TIME    EQU		?
-		DATA        EQU		?
+		BIT_TIME        EQU		?
+		DATA            EQU		?
 		T_SEC0		EQU		?
 		T_MIN		EQU		?
-		T_SEC       EQU		?
-		T_HOUR      EQU		?
-		KEY_DELAY   EQU		?
+		T_SEC           EQU		?
+		T_HOUR          EQU		?
+		KEY_DELAY       EQU		?
 		REMOTE_DATA1	EQU		?
 		REMOTE_DATA2	EQU		?
 ;*****************************************************;
@@ -54,8 +54,8 @@
 		F_RISE_YK	EQU		FLAG0,2
 		F_REMOTE	EQU		FLAG0,3
 		F_OUT_HIG	EQU		FLAG0,4
-		F_OUT_MID	EQU     FLAG0,5
-		F_OUT_LOW   EQU     FLAG0,6
+		F_OUT_MID	EQU             FLAG0,5
+		F_OUT_LOW       EQU             FLAG0,6
 		F_OUT_OSC	EQU		FLAG0,7
 		
 		F_BIT0		EQU		FLAG1,0
