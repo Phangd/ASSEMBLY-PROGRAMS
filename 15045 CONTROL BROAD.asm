@@ -47,7 +47,7 @@
 		REMOTE_DATA1	EQU		?
 		REMOTE_DATA2	EQU		?
 ;*****************************************************;
-;				Bit Flag Definition					  ;
+;		     Bit Flag Definition              ;
 ;*****************************************************;
 		F_ONKEY		EQU		FLAG0,0
 		F_ONOFF		EQU		FLAG0,1
