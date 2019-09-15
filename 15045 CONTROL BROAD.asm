@@ -106,7 +106,7 @@ YK_PPULSE:
 		SETB		F_RISE_YK			; 上升沿
 		RLCR  		CODE2
 		RLCR  		CODE1
-		LD	    	A,TN		; >2ms
+		LD	    	A,TN				; >2ms
 		HSUBIA		D'16'
 		SZB  		STATUS,C
 		JP	    	ERROR_REMOTE
@@ -116,7 +116,7 @@ YK_PPULSE:
 		JP	    	ERROR_REMOTE
 		CLRB		CODE2,0
 		LD	    	A,TN
-		HSUBIA		D'7'		; 1ms?
+		HSUBIA		D'7'				; 1ms?
 		SZB 		STATUS,C
 YK_BIT1:		
 		SETB		CODE2,0
