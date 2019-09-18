@@ -101,50 +101,50 @@
 INT_SERVICE:
 PUSH:	
 		LD		ACC_BAK,A				;保护现场
-		SWAPA	STATUS
+		SWAPA		STATUS
 		LD		STATUS_BAK,A
-		SNZB	PIE1,TMR2IE				;检测是否允许TIMER0中断
+		SNZB		PIE1,TMR2IE				;检测是否允许TIMER0中断
 		JP		INT_EXIT
-		SNZB	PIR1,TMR2IF				;检测TIMER0溢出中断标志位
+		SNZB		PIR1,TMR2IF				;检测TIMER0溢出中断标志位
 		JP		INT_EXIT
-		CLRB	PIR1,TMR2IF				;清零TIMER0溢出中断标志位
+		CLRB		PIR1,TMR2IF				;清零TIMER0溢出中断标志位
 ;-----------------------------------------------------;
 TIMER2:
-		INCR	TIME_2MS
-		INCR	LED_TIME
-		INCR	WAIT_AD_TIME
+		INCR		TIME_2MS
+		INCR		LED_TIME
+		INCR		WAIT_AD_TIME
 END_TIMER2:
 ;-----------------------------------------------------;
 LED_CLOSE:
-		SNZB	F_T4MS
+		SNZB		F_T4MS
 		JP		END_LED_CLOSE
-		CLRB	F_T4MS					;if(led_time>=40)	L697
-		SETB	LED6
-		SETB	LED7
-		SETB	LED8
-		SETB	LED9
-		SETB	LED10
-		SETB	LED11
+		CLRB		F_T4MS					;if(led_time>=40)	L697
+		SETB		LED6
+		SETB		LED7
+		SETB		LED8
+		SETB		LED9
+		SETB		LED10
+		SETB		LED11
 END_LED_CLOSE:
 ;-----------------------------------------------------;
 		SZB		F_CHARG					;if(f_charg)	L707-716
 		JP		CHARG_DETECT
 		SZB		F_BRATH					;else if(f_brath)	L717-803
 		JP		BRATH_DETECT
-		JP		LED_DISPLAY_JUD			;else	L804-812
+		JP		LED_DISPLAY_JUD				;else	L804-812
 ;-----------------------------------------------------;		
 CHARG_DETECT:
 		CLR		SLEEP_DELAY
-		SNZB	F_FULL					;if(f_full) LED11_ON;	L710
+		SNZB		F_FULL					;if(f_full) LED11_ON;	L710
 		JP		NOT_FULL
-		CLRB	LED11
+		CLRB		LED11
 		JP		END_CHARG_DETECT
 NOT_FULL:								;else	L711
 		LD		A,LED_TIME	
-		HSUBA	LED_ON_TIME
-		SNZB	STATUS,C				;if(led_on_time>led_time) LED11_ON;
-		CLRB	LED11					;else LED11_OFF;
-		SETB	LED11
+		HSUBA		LED_ON_TIME
+		SNZB		STATUS,C				;if(led_on_time>led_time) LED11_ON;
+		CLRB		LED11					;else LED11_OFF;
+		SETB		LED11
 END_CHARG_DETECT:
 		JP		WORK_DISPOSAL			;if(f_onoff)		L814
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -155,194 +155,194 @@ BRATH_DETECT:
 		SZB		STATUS,C				;if(brath_time<1)	L720
 		JP		BRATH_TIME_LESS2
 		LD		A,SPEED
-		XORIA	01H
+		XORIA		01H
 		SZB		STATUS,Z				;if(speed==1) LED6_ON;
 		JP		LED6_ON
 		LD		A,SPEED
-		XORIA	02H
+		XORIA		02H
 		SZB		STATUS,Z				;else if(speed==2) LED7_ON;
 		JP		LED7_ON
 		LD		A,SPEED
-		XORIA	03H
+		XORIA		03H
 		SZB		STATUS,Z				;else if(speed==3) LED8_ON;
 		JP		LED8_ON
 		LD		A,SPEED
-		XORIA	04H
+		XORIA		04H
 		SZB		STATUS,Z				;else if(speed==4) LED9_ON;
 		JP		LED9_ON
 		LD		A,SPEED
-		XORIA	05H
+		XORIA		05H
 		SZB		STATUS,Z				;else if(speed==5) LED10_ON;
 		JP		LED10_ON
 		JP		BAT_LOW_DETECT
 LED6_ON:
-		CLRB	LED6
+		CLRB		LED6
 		JP		BAT_LOW_DETECT
 LED7_ON:
-		CLRB	LED7
+		CLRB		LED7
 		JP		BAT_LOW_DETECT
 LED8_ON:
-		CLRB	LED8
+		CLRB		LED8
 		JP		BAT_LOW_DETECT
 LED9_ON:
-		CLRB	LED9
+		CLRB		LED9
 		JP		BAT_LOW_DETECT
 LED10_ON:
-		CLRB	LED10		
+		CLRB		LED10		
 BAT_LOW_DETECT:
 		SZB		F_BAT_LOW				;if((f_bat_low)||(f_low_3v))	L728
 		JP		BAT_LOW
 		SZB		F_LOW_3V
 		JP		BAT_LOW
 		LD		A,LED_TIME				;else	L733
-		HSUBA	LED_ON_TIME
-		SNZB	STATUS,C				;if(led_on_time>led_time)
-		CLRB	LED11
-		SETB	LED11
+		HSUBA		LED_ON_TIME
+		SNZB		STATUS,C				;if(led_on_time>led_time)
+		CLRB		LED11
+		SETB		LED11
 		JP		END_BRATH_DETECT
 BAT_LOW:		
-		SNZB	FLASH_TIME_0
-		CLRB	LED11
+		SNZB		FLASH_TIME_0
+		CLRB		LED11
 		SZB		FLASH_TIME_0
-		SETB	LED11
+		SETB		LED11
 		JP		END_BRATH_DETECT
 BRATH_TIME_LESS2:
-		SNZB	F_BRATH
+		SNZB		F_BRATH
 		JP		END_BRATH_DETECT
 		CLR		SLEEP_DELAY
 		LD		A,BRATH_TIME
-		HSUBIA	D'2'
+		HSUBIA		D'2'
 		SZB		STATUS,C				;else if(brath_time<2)	L739
 		JP		BRATH_TIME_LESS3
 		SZB		F_BAT_LOW				;if((f_bat_low)||(f_low_3v))	L741
 		JP		BAT_LOW1
 		SZB		F_LOW_3V
 		JP		BAT_LOW1
-		CLRB	LED11
+		CLRB		LED11
 		JP		LED_TIME_JUD
 BAT_LOW1:
-		SNZB	FLASH_TIME_0
-		CLRB	LED11
+		SNZB		FLASH_TIME_0
+		CLRB		LED11
 		SZB		FLASH_TIME_0
-		SETB	LED11
-LED_TIME_JUD:							;if(led_on_time>led_time)	L747
+		SETB		LED11
+LED_TIME_JUD:								;if(led_on_time>led_time)	L747
 		LD		A,LED_TIME
-		HSUBA	LED_ON_TIME
-		SNZB	STATUS,C
+		HSUBA		LED_ON_TIME
+		SNZB		STATUS,C
 		JP		LED_ON_JUD
-		SETB	LED6
-		SETB	LED7
-		SETB	LED8
-		SETB	LED9
-		SETB	LED10
+		SETB		LED6
+		SETB		LED7
+		SETB		LED8
+		SETB		LED9
+		SETB		LED10
 		JP		END_BRATH_DETECT
 LED_ON_JUD:
 		LD		A,SPEED
-		XORIA	01H
+		XORIA		01H
 		SZB		STATUS,Z				;if(speed==1) LED6_ON;
 		JP		LED6_ON1
 		LD		A,SPEED
-		XORIA	02H
+		XORIA		02H
 		SZB		STATUS,Z				;else if(speed==2) LED7_ON;
 		JP		LED7_ON1
 		LD		A,SPEED
-		XORIA	03H
+		XORIA		03H
 		SZB		STATUS,Z				;else if(speed==3) LED8_ON;
 		JP		LED8_ON1
 		LD		A,SPEED
-		XORIA	04H
+		XORIA		04H
 		SZB		STATUS,Z				;else if(speed==4) LED9_ON;
 		JP		LED9_ON1
 		LD		A,SPEED
-		XORIA	05H
+		XORIA		05H
 		SZB		STATUS,Z				;else if(speed==5) LED10_ON;
 		JP		LED10_ON1
 		JP		END_BRATH_DETECT
 LED6_ON1:
-		CLRB	LED6
+		CLRB		LED6
 		JP		END_BRATH_DETECT
 LED7_ON1:
-		CLRB	LED7
+		CLRB		LED7
 		JP		END_BRATH_DETECT
 LED8_ON1:
-		CLRB	LED8
+		CLRB		LED8
 		JP		END_BRATH_DETECT
 LED9_ON1:
-		CLRB	LED9
+		CLRB		LED9
 		JP		END_BRATH_DETECT
 LED10_ON1:
-		CLRB	LED10
+		CLRB		LED10
 		JP		END_BRATH_DETECT
 BRATH_TIME_LESS3:
-		SNZB	F_BRATH
+		SNZB		F_BRATH
 		JP		END_BRATH_DETECT
 		CLR		SLEEP_DELAY
 		LD		A,BRATH_TIME
-		HSUBIA	D'3'
+		HSUBIA		D'3'
 		SZB		STATUS,C
 		JP		BRATH_TIME_ELSE
 		SZB		F_BAT_LOW				;if((f_bat_low)||(f_low_3v))	L766
 		JP		BAT_LOW2
 		SZB		F_LOW_3V
 		JP		BAT_LOW2
-		CLRB	LED11
+		CLRB		LED11
 		JP		LED_TIME_JUD1
 BAT_LOW2:
-		SNZB	FLASH_TIME_0
-		CLRB	LED11
+		SNZB		FLASH_TIME_0
+		CLRB		LED11
 		SZB		FLASH_TIME_0
-		SETB	LED11
-LED_TIME_JUD1:							;if(led_on_time>led_time)	L772
+		SETB		LED11
+LED_TIME_JUD1:								;if(led_on_time>led_time)	L772
 		LD		A,LED_TIME
-		HSUBA	LED_ON_TIME
-		SNZB	STATUS,C
+		HSUBA		LED_ON_TIME
+		SNZB		STATUS,C
 		JP		LED_ON_JUD
-		SETB	LED6
-		SETB	LED7
-		SETB	LED8
-		SETB	LED9
-		SETB	LED10
+		SETB		LED6
+		SETB		LED7
+		SETB		LED8
+		SETB		LED9
+		SETB		LED10
 		JP		END_BRATH_DETECT
 LED_ON_JUD1:
-		CLRB	LED6
-		CLRB	LED7
-		CLRB	LED8
-		CLRB	LED9
-		CLRB	LED10
+		CLRB		LED6
+		CLRB		LED7
+		CLRB		LED8
+		CLRB		LED9
+		CLRB		LED10
 		JP		END_BRATH_DETECT
 BRATH_TIME_ELSE:
-		CLRB	LED6
-		CLRB	LED7
-		CLRB	LED8
-		CLRB	LED9
-		CLRB	LED10
+		CLRB		LED6
+		CLRB		LED7
+		CLRB		LED8
+		CLRB		LED9
+		CLRB		LED10
 		SZB		F_BAT_LOW				;if((f_bat_low)||(f_low_3v))	L796
 		JP		BAT_LOW3
 		SZB		F_LOW_3V
 		JP		BAT_LOW3
-		CLRB	LED11
+		CLRB		LED11
 		JP		END_BRATH_DETECT
 BAT_LOW3:
-		SNZB	FLASH_TIME_0
-		CLRB	LED11
+		SNZB		FLASH_TIME_0
+		CLRB		LED11
 		SZB		FLASH_TIME_0
-		SETB	LED11
+		SETB		LED11
 END_BRATH_DETECT:
 		JP		WORK_DISPOSAL
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-LED_DISPLAY_JUD:						;else	L804-812
+LED_DISPLAY_JUD:							;else	L804-812
 		SZB		LED_BUF_0
-		CLRB	LED6
+		CLRB		LED6
 		SZB		LED_BUF_1
-		CLRB	LED7
+		CLRB		LED7
 		SZB		LED_BUF_2
-		CLRB	LED8
+		CLRB		LED8
 		SZB		LED_BUF_3
-		CLRB	LED9
+		CLRB		LED9
 		SZB		LED_BUF_4
-		CLRB	LED10
+		CLRB		LED10
 		SZB		LED_BUF_5
-		CLRB	LED11
+		CLRB		LED11
 ;-----------------------------------------------------;
 WORK_DISPOSAL:							
 		SZB		F_ONOFF
@@ -353,64 +353,64 @@ POW_OFF:
 		CLR		WORK_TIME
 		CLR		MOTOAB_OUT_TIME
 		CLR		MOTOAB_STOP_TIME
-		;CLRB	OUT_MOTA
-		;CLRB	OUT_MOTB
+		;CLRB		OUT_MOTA
+		;CLRB		OUT_MOTB
 		JP		END_WORK_DISPOSAL
 POW_ON:
-		INCR	MOTO_OUT_TIME
+		INCR		MOTO_OUT_TIME
 		CLR		SLEEP_DELAY
 		
-		LD		A,MOTOAB_OUT_TIME		;motoa_out_time=motoab_out_time;	L818
+		LD		A,MOTOAB_OUT_TIME			;motoa_out_time=motoab_out_time;	L818
 		LD		MOTO_OUT_TIME,A
 		
-		LD		A,MOTOAB_STOP_TIME		;motoa_sleep_time=motoa_out_time+motoab_stop_time;	L819
-		ADDA	MOTOA_OUT_TIME
+		LD		A,MOTOAB_STOP_TIME			;motoa_sleep_time=motoa_out_time+motoab_stop_time;	L819
+		ADDA		MOTOA_OUT_TIME
 		LD		MOTOA_SLEEP_TIME,A
 		
-		LD		A,MOTOAB_OUT_TIME		;motob_out_time=motoa_sleep_time+motoab_out_time;	L820
-		ADDA	MOTOA_SLEEP_TIME
+		LD		A,MOTOAB_OUT_TIME			;motob_out_time=motoa_sleep_time+motoab_out_time;	L820
+		ADDA		MOTOA_SLEEP_TIME
 		LD		MOTOB_OUT_TIME,A
 		
-		LD		A,MOTOAB_STOP_TIME		;motob_sleep_time=motob_out_time+motoab_stop_time;	L821
-		ADDA	MOTOB_OUT_TIME
+		LD		A,MOTOAB_STOP_TIME			;motob_sleep_time=motob_out_time+motoab_stop_time;	L821
+		ADDA		MOTOB_OUT_TIME
 		LD		MOTOB_SLEEP_TIME,A
 		
 		LD		A,MOTOB_SLEEP_TIME
-		HSUBA	MOTO_OUT_TIME
-		SNZB	STATUS,C
-		CLR		MOTO_OUT_TIME			;if(moto_out_time>motob_sleep_time) moto_out_time=0;	L822
+		HSUBA		MOTO_OUT_TIME
+		SNZB		STATUS,C
+		CLR		MOTO_OUT_TIME				;if(moto_out_time>motob_sleep_time) moto_out_time=0;	L822
 		LD		A,MOTOA_OUT_TIME
-		HSUBA	MOTO_OUT_TIME
+		HSUBA		MOTO_OUT_TIME
 		SZB		STATUS,C
 		JP		MOTA_ON
 		LD		A,MOTOA_SLEEP_TIME
-		HSUBA	MOTO_OUT_TIME
+		HSUBA		MOTO_OUT_TIME
 		SZB		STATUS,C
 		JP		MOTO_OFF
 		LD		A,MOTOB_OUT_TIME
-		HSUBA	MOTO_OUT_TIME
+		HSUBA		MOTO_OUT_TIME
 		SZB		STATUS,C
 		JP		MOTB_ON
 		JP		MOTO_OFF
 MOTA_ON:
-		;SETB	OUT_MOTA
-		;CLRB	OUT_MOTB
+		;SETB		OUT_MOTA
+		;CLRB		OUT_MOTB
 		JP		END_WORK_DISPOSAL
 MOTO_OFF:
-		;CLRB	OUT_MOTA
-		;CLRB	OUT_MOTB
+		;CLRB		OUT_MOTA
+		;CLRB		OUT_MOTB
 		JP		END_WORK_DISPOSAL
 MOTB_ON:
-		;CLRB	OUT_MOTA
-		;SETB	OUT_MOTB		
+		;CLRB		OUT_MOTA
+		;SETB		OUT_MOTB		
 END_WORK_DISPOSAL:
 ;-----------------------------------------------------;
 INT_EXIT:
 POP:	
-		SWAPA	STATUS_BAK				;恢复现场
+		SWAPA		STATUS_BAK				;恢复现场
 		LD		STATUS,A
-		SWAPR	ACC_BAK
-		SWAPA	ACC_BAK
+		SWAPR		ACC_BAK
+		SWAPA		ACC_BAK
 		RETI
 ;*****************************************************;		
 RESET:
@@ -418,76 +418,76 @@ RESET:
 		CLR		INTCON					;关闭全局中断、外设中断
 		CLR		STATUS
 POWER_ON_DELAY:							;上电延迟100us
-		INCR	POWER_DELAY
+		INCR		POWER_DELAY
 		LD		A,POWER_DELAY
-		HSUBIA	D'100'
-		SNZB	STATUS,C
+		HSUBIA		D'100'
+		SNZB		STATUS,C
 		JP		POWER_ON_DELAY
 		CLR		POWER_DELAY
 ;----------------------端口赋值-----------------------;
-		LDIA	B'11110000'				;PA0/1/2/3作输出
+		LDIA		B'11110000'				;PA0/1/2/3作输出
 		LD		TRISA,A
-		LDIA	B'11001111'				;SW_POWER--PB3
+		LDIA		B'11001111'				;SW_POWER--PB3
 		LD		TRISB,A					;PB4/5作输出,PB7/6/3作输入
 		
-		LDIA	B'11111111'				;PA	'XXXX PA3 PA2 PA1 PA0'
+		LDIA		B'11111111'				;PA	'XXXX PA3 PA2 PA1 PA0'
 		LD		PORTA,A
-		LDIA	B'01110111'				;PB	'PB7 PB6 PB5 PB4 PB3 XXX'
+		LDIA		B'01110111'				;PB	'PB7 PB6 PB5 PB4 PB3 XXX'
 		LD		PORTB,A
 		
-		LDIA	B'11001000'				;PORTB7/6/3上拉电阻置1
+		LDIA		B'11001000'				;PORTB7/6/3上拉电阻置1
 		LD		WPUB,A
 ;----------------------清寄存器-----------------------;				
 CLR_RAM:
-										;BANK0
+									;BANK0
 		CLR		FSR
-		LDIA	01FH
+		LDIA		01FH
 		LD		FSR,A
 CLR_LOOP:
-		INCR	FSR
+		INCR		FSR
 		CLR		INDF
 		LD		A,FSR
-		HSUBIA	07FH					;有借位C=0
-		SNZB	STATUS,C
+		HSUBIA		07FH					;有借位C=0
+		SNZB		STATUS,C
 		JP		CLR_LOOP
 		CLR		INDF	
 ;---------------------中断初始化----------------------;
-		CLRB	PIE1,TMR2IE				;禁止TMR2与PR2匹配中断
-		CLRB	T2CON,TMR2ON			;禁止TIMER2
-		CLRB	PIR1,TMR2IF				;清零TIMER2中断标志位
+		CLRB		PIE1,TMR2IE				;禁止TMR2与PR2匹配中断
+		CLRB		T2CON,TMR2ON				;禁止TIMER2
+		CLRB		PIR1,TMR2IF				;清零TIMER2中断标志位
 		CLR		TMR2					;清零TIMER2计数器
 			
-		LDIA	B'00000000'			
+		LDIA		B'00000000'			
 		LD		T2CON,A					;预分配1:1,后分频1:1
 			
-		LDIA	D'124'					;125us*8/4-1=249
+		LDIA		D'124'					;125us*8/4-1=249
 		LD		PR2,A				
-		CLRB	PIR1,TMR2IF				;清零TIMER2中断标志位
-		SETB	INTCON,GIE				;使能全局中断
-		SETB	INTCON,PEIE				;使能外设中断
-		SETB	PIE1,TMR2IE				;使能TMR2与PR2匹配中断
-		SETB	T2CON,TMR2ON			;使能TIMER2
-		SETB	F_ONKEY
+		CLRB		PIR1,TMR2IF				;清零TIMER2中断标志位
+		SETB		INTCON,GIE				;使能全局中断
+		SETB		INTCON,PEIE				;使能外设中断
+		SETB		PIE1,TMR2IE				;使能TMR2与PR2匹配中断
+		SETB		T2CON,TMR2ON				;使能TIMER2
+		SETB		F_ONKEY
 ;*****************************************************;
 ;*****************************************************;
 ;*****************************************************;
 ;*****************************************************;
 MAINLOOP:
-		SNZB	F_T2MS
+		SNZB		F_T2MS
 		JP		ADC_PRC
-		CLRB	F_T2MS
+		CLRB		F_T2MS
 		CLRWDT
-		CALL	DISPLAY
-		CALL	TIMER_PRC
-		CALL	SCANKEY
-		CALL	TEMP_DATA_PRC
+		CALL		DISPLAY
+		CALL		TIMER_PRC
+		CALL		SCANKEY
+		CALL		TEMP_DATA_PRC
 		JP		MAINLOOP
 ;*****************************************************;
 ;*****************************************************;
 ;*****************************************************;
 ;*****************************************************;
 ADC_PRC:
-		LDIA	B'00111110'
+		LDIA		B'00111110'
 		LD		ADCON0,A
 		CLR		WAIT_AD_TIME
 		NOP
@@ -500,22 +500,22 @@ ADC_DONE_DETECT:
 		JP		ADC_DONE
 		NOP
 		LD		A,WAIT_AD_TIME
-		HSUBIA	D'16'
-		SNZB	STATUS,C
+		HSUBIA		D'16'
+		SNZB		STATUS,C
 		JP		ADC_DONE_DETECT
 		JP		END_ADC_PRC
 ADC_DONE:
 		LD		A,ADRESH
-		ADDR	NTC_BUF
-		INCR	NTC_NUM
+		ADDR		NTC_BUF
+		INCR		NTC_NUM
 		LD		A,NTC_NUM
-		HSUBIA	D'8'
-		SNZB	STATUS,C
+		HSUBIA		D'8'
+		SNZB		STATUS,C
 		JP		END_ADC_PRC
 		CLR		NTC_NUM
-		RRCR	NTC_BUF
-		RRCR	NTC_BUF
-		RRCR	NTC_BUF
+		RRCR		NTC_BUF
+		RRCR		NTC_BUF
+		RRCR		NTC_BUF
 		LD		A,NTC_BUF
 		LD		NTC_RAM,A
 		CLR		NTC_BUF
@@ -526,23 +526,23 @@ END_ADC_PRC:
 ;*****************************************************;
 ;*****************************************************;
 DISPLAY:
-		INCR	LEDN
+		INCR		LEDN
 		LD		A,LEDN
-		HSUBIA	D'5'
+		HSUBIA		D'5'
 		SZB		STATUS,C				;if(++ledn>=5) ledn=0;	L539
 		CLR		LEDN
 ;-----------------------------------------------------;	
 		LD		A,LEDN
-		XORIA	00H
-		SNZB	STATUS,Z				;if(ledn==0)	L540
+		XORIA		00H
+		SNZB		STATUS,Z				;if(ledn==0)	L540
 		JP		END_DISPLAY
 		CLR		LED_BUF
-		SNZB	F_BAT_LOW				;L543
+		SNZB		F_BAT_LOW				;L543
 		JP		POWER_ON_JUD
-		SNZB	F_ONOFF					;if((f_bat_low)&&(f_onoff))	L543
+		SNZB		F_ONOFF					;if((f_bat_low)&&(f_onoff))	L543
 		JP		POWER_ON_JUD
-		CLRB	F_ONOFF
-		SETB	F_BRATH
+		CLRB		F_ONOFF
+		SETB		F_BRATH
 		CLR		BRATH_TIME
 		CLR		BRATH_CYCLE
 ;-----------------------------------------------------;
@@ -559,140 +559,140 @@ POWER_ON_JUD:
 		JP		BAT_LOW_WORK
 		JP		WORK_DISPLAY
 BAT_LOW_WORK:
-		SETB	LED_BUF_5				;led_buf|=0x20;
-		SNZB	FLASH_TIME_0			;if(flash_time&0x01) led_buf&=0xdf;	L555
+		SETB		LED_BUF_5				;led_buf|=0x20;
+		SNZB		FLASH_TIME_0			;if(flash_time&0x01) led_buf&=0xdf;	L555
 		JP		WORK_DISPLAY
 		SZB		FLASH_TIME_0
-		LDIA	B'11011111'
-		ANDA	LED_BUF
+		LDIA		B'11011111'
+		ANDA		LED_BUF
 WORK_DISPLAY:							;switch(speed)	L557
 		LD		A,SPEED
-		XORIA	D'1'						;case 1:
+		XORIA		D'1'						;case 1:
 		SZB		STATUS,Z
 		JP		LED6_ON2
 		
 		LD		A,SPEED
-		XORIA	D'2'						;case 2:
+		XORIA		D'2'						;case 2:
 		SZB		STATUS,Z
 		JP		LED7_ON2
 		
 		LD		A,SPEED
-		XORIA	D'3'						;case 3:
+		XORIA		D'3'						;case 3:
 		SZB		STATUS,Z
 		JP		LED8_ON2
 		
 		LD		A,SPEED
-		XORIA	D'4'						;case 4:
+		XORIA		D'4'						;case 4:
 		SZB		STATUS,Z
 		JP		LED9_ON2
 		
 		LD		A,SPEED
-		XORIA	D'5'						;case 5:
+		XORIA		D'5'						;case 5:
 		SZB		STATUS,Z
 		JP		LED10_ON2
 		JP		END_POWER_ON_JUD
 LED6_ON2:
-		SETB	LED_BUF_0
+		SETB		LED_BUF_0
 		JP		END_POWER_ON_JUD
 LED7_ON2:
-		SETB	LED_BUF_1
+		SETB		LED_BUF_1
 		JP		END_POWER_ON_JUD
 LED8_ON2:
-		SETB	LED_BUF_2
+		SETB		LED_BUF_2
 		JP		END_POWER_ON_JUD
 LED9_ON2:
-		SETB	LED_BUF_3
+		SETB		LED_BUF_3
 		JP		END_POWER_ON_JUD
 LED10_ON2:
-		SETB	LED_BUF_4
+		SETB		LED_BUF_4
 END_POWER_ON_JUD:
 		JP		END_DISPLAY
 ;-----------------------------------------------------;
 F_ONKEY_JUD:
 		LD		A,KEY_DELAY
-		HSUBIA	D'4'
-		SNZB	STATUS,C
+		HSUBIA		D'4'
+		SNZB		STATUS,C
 		JP		F_ONKEY_JUD1
 		LD		A,OFF_SPEED_BUF
-		XORA	OFF_SPEED
-		SNZB	STATUS,Z				;if((key_delay>3)&&(off_speed!=off_speed_buf)) led_buf|=0x1f;
+		XORA		OFF_SPEED
+		SNZB		STATUS,Z				;if((key_delay>3)&&(off_speed!=off_speed_buf)) led_buf|=0x1f;
 		JP		F_ONKEY_JUD1
-		SETB	LED_BUF_0				;led_buf|=0x1f;
-		SETB	LED_BUF_1
-		SETB	LED_BUF_2
-		SETB	LED_BUF_3
-		SETB	LED_BUF_4
+		SETB		LED_BUF_0				;led_buf|=0x1f;
+		SETB		LED_BUF_1
+		SETB		LED_BUF_2
+		SETB		LED_BUF_3
+		SETB		LED_BUF_4
 		JP		END_DISPLAY
 F_ONKEY_JUD1:
 		LD		A,OFF_SPEED_BUF
-		HSUBA	OFF_SPEED
-		SNZB	STATUS,C
+		HSUBA		OFF_SPEED
+		SNZB		STATUS,C
 		JP		F_ONKEY_JUD2
 		LD		A,OFF_SPEED
-		XORIA	01H
-		SNZB	STATUS,Z				;else if((off_speed_buf>off_speed)&&(off_speed==1))	L581
+		XORIA		01H
+		SNZB		STATUS,Z				;else if((off_speed_buf>off_speed)&&(off_speed==1))	L581
 		JP		F_ONKEY_JUD2
-		SETB	LED_BUF_0
-		SETB	LED_BUF_1
-		SETB	LED_BUF_2
-		SETB	LED_BUF_3
-		SETB	LED_BUF_4
+		SETB		LED_BUF_0
+		SETB		LED_BUF_1
+		SETB		LED_BUF_2
+		SETB		LED_BUF_3
+		SETB		LED_BUF_4
 		JP		END_DISPLAY
 F_ONKEY_JUD2:
 		LD		A,OFF_SPEED_BUF
-		HSUBA	OFF_SPEED
+		HSUBA		OFF_SPEED
 		SZB		STATUS,C				;else if((off_speed_buf<off_speed)&&(off_speed==5))	L585
 		JP		F_ONKEY_JUD3
 		LD		A,OFF_SPEED
-		XORIA	05H
-		SNZB	STATUS,Z
+		XORIA		05H
+		SNZB		STATUS,Z
 		JP		F_ONKEY_JUD3
-		SETB	LED_BUF_0
-		SETB	LED_BUF_1
-		SETB	LED_BUF_2
-		SETB	LED_BUF_3
-		SETB	LED_BUF_4
+		SETB		LED_BUF_0
+		SETB		LED_BUF_1
+		SETB		LED_BUF_2
+		SETB		LED_BUF_3
+		SETB		LED_BUF_4
 		JP		END_DISPLAY
 F_ONKEY_JUD3:							;switch(off_speed)
 		LD		A,OFF_SPEED
-		XORIA	D'1'						;case 1:
+		XORIA		D'1'						;case 1:
 		SZB		STATUS,Z
 		JP		OFF_SPEED1
 		
 		LD		A,SPEED
-		XORIA	D'2'						;case 2:
+		XORIA		D'2'						;case 2:
 		SZB		STATUS,Z
 		JP		OFF_SPEED2
 		
 		LD		A,SPEED
-		XORIA	D'3'						;case 3:
+		XORIA		D'3'						;case 3:
 		SZB		STATUS,Z
 		JP		OFF_SPEED3
 		
 		LD		A,SPEED
-		XORIA	D'4'						;case 4:
+		XORIA		D'4'						;case 4:
 		SZB		STATUS,Z
 		JP		OFF_SPEED4
 		
 		LD		A,SPEED
-		XORIA	D'5'						;case 5:
+		XORIA		D'5'						;case 5:
 		SZB		STATUS,Z
 		JP		OFF_SPEED5
 		JP		END_DISPLAY
 OFF_SPEED1:
-		SETB	LED_BUF_0
+		SETB		LED_BUF_0
 		JP		END_DISPLAY
 OFF_SPEED2:
-		SETB	LED_BUF_1
+		SETB		LED_BUF_1
 		JP		END_DISPLAY
 OFF_SPEED3:
-		SETB	LED_BUF_2
+		SETB		LED_BUF_2
 		JP		END_DISPLAY
 OFF_SPEED4:
-		SETB	LED_BUF_3
+		SETB		LED_BUF_3
 		JP		END_DISPLAY
 OFF_SPEED5:
-		SETB	LED_BUF_4
+		SETB		LED_BUF_4
 END_DISPLAY:
 		RET
 ;*****************************************************;
@@ -700,13 +700,13 @@ END_DISPLAY:
 ;*****************************************************;
 ;*****************************************************;
 TIMER_PRC:
-		INCR	FLASH_TIME1
+		INCR		FLASH_TIME1
 		LD		A,FLASH_TIME1
-		HSUBIA	D'150'					;if(++flash_time1>=150)
-		SNZB	STATUS,C
+		HSUBIA		D'150'					;if(++flash_time1>=150)
+		SNZB		STATUS,C
 		JP		END_FLASH_TIME1_JUD
 		CLR		FLASH_TIME1
-		INCR	FLASH_TIME
+		INCR		FLASH_TIME
 END_FLASH_TIME1_JUD:
 		SZB		F_CHARG
 		JP		CHARG_DETECT1
@@ -715,152 +715,152 @@ END_FLASH_TIME1_JUD:
 		JP		TIME_500MS_JUD
 ;-----------------------------------------------------;
 CHARG_DETECT1:		
-		INCR	BRATH_TIME1
+		INCR		BRATH_TIME1
 		LD		A,BRATH_TIME1
-		HSUBIA	D'5'					;if(++brath_time1>=5)
-		SNZB	STATUS,C
+		HSUBIA		D'5'					;if(++brath_time1>=5)
+		SNZB		STATUS,C
 		JP		END_CHARG_DETECT1
 		CLR		BRATH_TIME1
-		INCR	BRATH_CYCLE
+		INCR		BRATH_CYCLE
 		
 		LD		A,BRATH_CYCLE
-		HSUBIA	D'255'					
-		SNZB	STATUS,C
+		HSUBIA		D'255'					
+		SNZB		STATUS,C
 		JP		BRATH_CYCLE_HIG_JUD
 		CLR		BRATH_CYCLE
-		SETB	F_BRATH_CYCLE_HIG
+		SETB		F_BRATH_CYCLE_HIG
 		JP		BRATH_CYCLE_HIG_JUD
 BRATH_CYCLE_HIG_JUD:
-		SNZB	F_BRATH_CYCLE_HIG
+		SNZB		F_BRATH_CYCLE_HIG
 		JP		LED_ON_TIME_ADD
 		LD		A,BRATH_CYCLE
-		HSUBIA	D'196'					;if(brath_cycle<=450)
-		SNZB	STATUS,C
+		HSUBIA		D'196'					;if(brath_cycle<=450)
+		SNZB		STATUS,C
 		JP		LED_ON_TIME_ADD
 		
 		LD		A,BRATH_CYCLE
-		HSUBIA	D'246'					;if(brath_cycle<=500)
-		SNZB	STATUS,C
+		HSUBIA		D'246'					;if(brath_cycle<=500)
+		SNZB		STATUS,C
 		JP		LED_ON_TIME_SUB
 		
 		CLR		BRATH_CYCLE				;else	brath_cycle=0;
-		CLRB	F_BRATH_CYCLE_HIG		;同时清零高位标志
+		CLRB		F_BRATH_CYCLE_HIG		;同时清零高位标志
 		JP		END_CHARG_DETECT1
 LED_ON_TIME_ADD:
 		LD		A,LED_ON_TIME
-		HSUBIA	D'40'					;if(led_on_time<40)
+		HSUBIA		D'40'					;if(led_on_time<40)
 		SZB		STATUS,C
-		INCR	LED_ON_TIME
+		INCR		LED_ON_TIME
 		JP		END_CHARG_DETECT1
 LED_ON_TIME_SUB:
 		LD		A,LED_ON_TIME
-		HSUBIA	D'1'					;if(led_on_time>=1)
+		HSUBIA		D'1'					;if(led_on_time>=1)
 		SZB		STATUS,C
-		DECR	LED_ON_TIME
+		DECR		LED_ON_TIME
 END_CHARG_DETECT1:
 		JP		TIME_500MS_JUD
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 BRATH_DETECT1:
-		SNZB	F_BRATH
+		SNZB		F_BRATH
 		JP		END_BRATH_DETECT1
-		INCR	BRATH_TIME1
+		INCR		BRATH_TIME1
 		LD		A,BRATH_TIME1
-		HSUBIA	D'5'					;if(++brath_time1>=5)
-		SNZB	STATUS,C
+		HSUBIA		D'5'					;if(++brath_time1>=5)
+		SNZB		STATUS,C
 		JP		END_BRATH_DETECT1
 		CLR		BRATH_TIME1
-		INCR	BRATH_CYCLE
+		INCR		BRATH_CYCLE
 		LD		A,BRATH_CYCLE
-		HSUBIA	D'51'					;if(brath_cycle<=50)
-		SNZB	STATUS,C
+		HSUBIA		D'51'					;if(brath_cycle<=50)
+		SNZB		STATUS,C
 		JP		BRATH_TIME_ADD
 		LD		A,BRATH_CYCLE
-		HSUBIA	D'101'					;else if(brath_cycle<=100)
-		SNZB	STATUS,C
+		HSUBIA		D'101'					;else if(brath_cycle<=100)
+		SNZB		STATUS,C
 		JP		BRATH_TIME_SUB
-		CLR 	BRATH_CYCLE
+		CLR 		BRATH_CYCLE
 		JP		END_BRATH_DETECT1
 BRATH_TIME_ADD:
 		LD		A,LED_ON_TIME
-		HSUBIA	D'40'					;if(led_on_time<40)
-		SNZB	STATUS,C
-		INCR	LED_ON_TIME	
+		HSUBIA		D'40'					;if(led_on_time<40)
+		SNZB		STATUS,C
+		INCR		LED_ON_TIME	
 		LD		A,BRATH_CYCLE
-		XORIA	D'50'					;if(brath_cycle==50)
-		SNZB	STATUS,Z
+		XORIA		D'50'					;if(brath_cycle==50)
+		SNZB		STATUS,Z
 		JP		END_BRATH_DETECT1
-		INCR	BRATH_TIME
+		INCR		BRATH_TIME
 		LD		A,BRATH_TIME
-		HSUBIA	D'5'					;if(brath_time>=5)
-		SNZB	STATUS,C
+		HSUBIA		D'5'					;if(brath_time>=5)
+		SNZB		STATUS,C
 		JP		END_BRATH_DETECT1
-		CLRB	F_BRATH
+		CLRB		F_BRATH
 		CLR		BRATH_TIME
 		JP		END_BRATH_DETECT1
 BRATH_TIME_SUB:
 		LD		A,LED_ON_TIME
-		HSUBIA	D'1'
+		HSUBIA		D'1'
 		SZB		STATUS,C
-		INCR	LED_ON_TIME
+		INCR		LED_ON_TIME
 		LD		A,BRATH_CYCLE
-		XORIA	D'100'
-		SNZB	STATUS,Z
+		XORIA		D'100'
+		SNZB		STATUS,Z
 		JP		END_BRATH_DETECT1
-		INCR	BRATH_TIME
+		INCR		BRATH_TIME
 		LD		A,BRATH_TIME
-		HSUBIA	D'5'					;if(brath_time>=5)
-		SNZB	STATUS,C
+		HSUBIA		D'5'					;if(brath_time>=5)
+		SNZB		STATUS,C
 		JP		END_BRATH_DETECT1
-		CLRB	F_BRATH
+		CLRB		F_BRATH
 		CLR		BRATH_TIME	
 END_BRATH_DETECT1:
 ;-----------------------------------------------------;
 TIME_500MS_JUD:
-		INCR	TIME_500MS
+		INCR		TIME_500MS
 		LD		A,TIME_500MS
-		HSUBIA	D'250'					;500ms
-		SNZB	STATUS,C
+		HSUBIA		D'250'					;500ms
+		SNZB		STATUS,C
 		JP		END_TIME500MS_JUD
 		CLR		TIME_500MS	
-		SNZB	F_ONOFF
+		SNZB		F_ONOFF
 		JP		TIMESEC_JUD
-		INCR	WORK_TIME				;每500ms+1
+		INCR		WORK_TIME				;每500ms+1
 		LD		A,WORK_TIME
-		HSUBIA	D'240'		;2mins		;if((f_onoff)&&(++work_time>=240)
-		SNZB	STATUS,C
+		HSUBIA		D'240'		;2mins		;if((f_onoff)&&(++work_time>=240)
+		SNZB		STATUS,C
 		JP		TIMESEC_JUD
-		CLRB	F_ONOFF
-		CLRB	F_BRATH
+		CLRB		F_ONOFF
+		CLRB		F_BRATH
 		CLR		BRATH_TIME
 		CLR		BRATH_CYCLE
 		CLR		LED_ON_TIME
 TIMESEC_JUD:
-		INCR	TIME_SEC
+		INCR		TIME_SEC
 		LD		A,TIME_SEC
-		HSUBIA	D'4'					;if(++time_sec>=4)
-		SNZB	STATUS,C
+		HSUBIA		D'4'					;if(++time_sec>=4)
+		SNZB		STATUS,C
 		JP		END_TIME500MS_JUD
 		CLR		TIME_SEC
-		INCR	SLEEP_DELAY
+		INCR		SLEEP_DELAY
 		LD		A,SLEEP_DELAY
-		HSUBIA	D'2'
-		SNZB	STATUS,C
+		HSUBIA		D'2'
+		SNZB		STATUS,C
 		JP		END_TIME500MS_JUD
-		CLRB	INTCON,GIE				;关闭全局中断
-		CLRB	PIE1,TMR2IE				;禁止TMR2与PR2匹配中断
-		CLRB	T2CON,TMR2ON			;禁止TIMER2
-		CLRB	PIR1,TMR2IF				;清零TIMER2中断标志位
+		CLRB		INTCON,GIE				;关闭全局中断
+		CLRB		PIE1,TMR2IE				;禁止TMR2与PR2匹配中断
+		CLRB		T2CON,TMR2ON			;禁止TIMER2
+		CLRB		PIR1,TMR2IF				;清零TIMER2中断标志位
 		CLR		TMR2					;清零TIMER2计数器
 		
-		LDIA	B'11110000'
+		LDIA		B'11110000'
 		LD		TRISA,A
-		LDIA	B'10001111'				;PORTB,6置输出(VDD_PIN)
+		LDIA		B'10001111'				;PORTB,6置输出(VDD_PIN)
 		LD		TRISB,A		
-		LDIA	B'11111111'
+		LDIA		B'11111111'
 		LD		PORTA,A
-		LDIA	B'00110111'				;PORTB,6置0
+		LDIA		B'00110111'				;PORTB,6置0
 		LD		PORTB,A
-		LDIA	B'10001000'				;取消PORTB,6上拉电阻
+		LDIA		B'10001000'				;取消PORTB,6上拉电阻
 		LD		WPUB,A
 		
 		CLRWDT
@@ -874,67 +874,67 @@ TIMESEC_JUD:
 		NOP
 		NOP
 		NOP
-		LDIA	B'11110000'				;Refurbish_Sfr();	L428
+		LDIA		B'11110000'				;Refurbish_Sfr();	L428
 		LD		TRISA,A
-		LDIA	B'11001111'				;PORTB,6置输入(VDD_PIN)
+		LDIA		B'11001111'				;PORTB,6置输入(VDD_PIN)
 		LD		TRISB,A		
-		LDIA	B'11111111'
+		LDIA		B'11111111'
 		LD		PORTA,A
-		LDIA	B'01110111'				;PORTB,6置1
+		LDIA		B'01110111'				;PORTB,6置1
 		LD		PORTB,A
-		LDIA	B'11001000'				;使能PORTB/6/3上拉电阻
+		LDIA		B'11001000'				;使能PORTB/6/3上拉电阻
 		LD		WPUB,A
 		
-		LDIA	B'00000000'			
+		LDIA		B'00000000'			
 		LD		T2CON,A					;预分配1:1,后分频1:1	
-		LDIA	D'124'					;125us
+		LDIA		D'124'					;125us
 		LD		PR2,A				
-		CLRB	PIR1,TMR2IF				;清零TIMER2中断标志位
-		SETB	INTCON,GIE				;使能全局中断
-		SETB	INTCON,PEIE				;使能外设中断
-		SETB	PIE1,TMR2IE				;使能TMR2与PR2匹配中断
-		SETB	T2CON,TMR2ON			;使能TIMER2
+		CLRB		PIR1,TMR2IF				;清零TIMER2中断标志位
+		SETB		INTCON,GIE				;使能全局中断
+		SETB		INTCON,PEIE				;使能外设中断
+		SETB		PIE1,TMR2IE				;使能TMR2与PR2匹配中断
+		SETB		T2CON,TMR2ON			;使能TIMER2
 		CLR		SLEEP_DELAY
 END_TIME500MS_JUD:
 ;-----------------------------------------------------;
 VDD_PIN_JUD:
-		SNZB	VDD_PIN					;if(VDD_PIN)
+		SNZB		VDD_PIN					;if(VDD_PIN)
 		JP		VDD_PIN_ZERO
 		CLR		NO_CHARG_TIME
-		INCR	ON_CHARG_TIME
+		INCR		ON_CHARG_TIME
 		LD		A,ON_CHARG_TIME
-		HSUBIA	D'100'
-		SNZB	STATUS,C				;if(++on_charg_time>=100)
+		HSUBIA		D'100'
+		SNZB		STATUS,C				;if(++on_charg_time>=100)
 		JP		END_VDD_PIN_JUD
-		SETB	F_CHARG
-		CLRB	F_ONOFF					;if(f_onoff)	f_onoff=0;
+		SETB		F_CHARG
+		CLRB		F_ONOFF					;if(f_onoff)	f_onoff=0;
 		JP		END_VDD_PIN_JUD
 VDD_PIN_ZERO:
 		CLR		ON_CHARG_TIME
-		INCR	NO_CHARG_TIME
+		INCR		NO_CHARG_TIME
 		LD		A,NO_CHARG_TIME
-		HSUBIA	D'100'
+		HSUBIA		D'100'
 		SZB		STATUS,C				;if(++no_charg_time>=100)
-		CLRB	F_CHARG
+		CLRB		F_CHARG
 END_VDD_PIN_JUD:
 ;-----------------------------------------------------;
 CHARG_PIN_JUD:
-		SNZB	CHARG_PIN				;if(CHAGE_PIN)
+		SNZB		CHARG_PIN				;if(CHAGE_PIN)
 		JP		NOT_FULL1
 		CLR		NO_FULL_TIME
-		INCR	FULL_TIME
+		INCR		FULL_TIME
 		LD		A,FULL_TIME
-		HSUBIA	D'200'
+		HSUBIA		D'200'
 		SZB		STATUS,C				;if(++full_time>=200) f_full=1;
-		SETB	F_FULL
+		SETB		F_FULL
 		JP		END_CHARG_PIN_JUD
 NOT_FULL1:
 		CLR		FULL_TIME
-		CLRB	F_ONOFF					;if(f_onoff)	f_onoff=0;
-		INCR	NO_FULL_TIME
-		HSUBIA	D'201'
+		CLRB		F_ONOFF					;if(f_onoff)	f_onoff=0;
+		INCR		NO_FULL_TIME
+		HSUBIA		D'201'
 		SZB		STATUS,C				;if(++no_full_time>200) f_full=0;
-		CLRB	F_FULL
+		CLRB		F_FULL
 END_CHARG_PIN_JUD:
 ;-----------------------------------------------------;
 WORK_ONOFF_JUD:
@@ -943,17 +943,17 @@ WORK_ONOFF_JUD:
 		CLR		PULSE_TIME
 		JP		END_WORK_ONOFF_JUD
 WORK_ON：								;每工作30秒停顿一下
-		INCR	PULSE_TIME
+		INCR		PULSE_TIME
 		LD		A,WORK_TIME
-		XORIA	D'60'
+		XORIA		D'60'
 		SZB		STATUS,Z
 		JP		MOTO_STOP
 		LD		A,WORK_TIME
-		XORIA	D'120'
+		XORIA		D'120'
 		SZB		STATUS,Z
 		JP		MOTO_STOP
 		LD		A,WORK_TIME
-		XORIA	D'180'					;if((work_time==120)||(work_time==240)||(work_time==360))
+		XORIA		D'180'					;if((work_time==120)||(work_time==240)||(work_time==360))
 		SZB		STATUS,Z
 		JP		MOTO_STOP
 		JP		WORK_MODE2				;else if(speed==2)
@@ -964,75 +964,75 @@ MOTO_STOP:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 WORK_MODE2:								;speed==2
 		LD		A,SPEED
-		XORIA	02H
-		SNZB	STATUS,Z				;else if(speed==2)
+		XORIA		02H
+		SNZB		STATUS,Z				;else if(speed==2)
 		JP		WORK_MODE3
 		LD		A,PULSE_TIME
-		HSUBIA	D'125'
-		SNZB	STATUS,C				;if(pulse_time>=125)
+		HSUBIA		D'125'
+		SNZB		STATUS,C				;if(pulse_time>=125)
 		JP		END_WORK_MODE2
 		CLR		PULSE_TIME
 		LD		A,MOTOAB_OUT_TIME
-		HSUBA	MOTOAB_OUT_MAX
-		SNZB	STATUS,C				;if(motoab_out_time>=motoab_out_max)
+		HSUBA		MOTOAB_OUT_MAX
+		SNZB		STATUS,C				;if(motoab_out_time>=motoab_out_max)
 		JP		SET_TIME_MAX
 		LD		A,MOTOAB_OUT_MIN
 		LD		MOTOAB_OUT_TIME,A
-		LDIA	D'12'
+		LDIA		D'12'
 		LD		MOTOAB_STOP_TIME,A
 		JP		END_WORK_MODE2
 SET_TIME_MAX:							;else
 		LD		A,MOTOAB_OUT_MAX
 		LD		MOTOAB_OUT_TIME,A
-		LDIA	D'8'
+		LDIA		D'8'
 		LD		MOTOAB_STOP_TIME,A
 END_WORK_MODE2:
 		JP		END_TIMER_PRC
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 WORK_MODE3:								;speed==3
 		LD		A,SPEED
-		XORIA	03H
-		SNZB	STATUS,Z				;else if(speed==3)
+		XORIA		03H
+		SNZB		STATUS,Z				;else if(speed==3)
 		JP		WORK_MODE4
 		LD		A,PULSE_TIME
-		HSUBIA	D'17'
-		SNZB	STATUS,C				;if(pulse_time>=17)
+		HSUBIA		D'17'
+		SNZB		STATUS,C				;if(pulse_time>=17)
 		JP		END_WORK_MODE3
 		CLR		PULSE_TIME
 		LD		A,MOTOAB_OUT_TIME
-		HSUBA	MOTOAB_OUT_MAX
-		SNZB	STATUS,C				;if(motoab_out_time>=motoab_out_max)
+		HSUBA		MOTOAB_OUT_MAX
+		SNZB		STATUS,C				;if(motoab_out_time>=motoab_out_max)
 		JP		SET_TIME_MAX1
 		LD		A,MOTOAB_OUT_MIN
 		LD		MOTOAB_OUT_TIME,A
-		LDIA	D'8'
+		LDIA		D'8'
 		LD		MOTOAB_STOP_TIME,A
 		JP		END_WORK_MODE3
 SET_TIME_MAX1:							;else
 		LD		A,MOTOAB_OUT_MAX
 		LD		MOTOAB_OUT_TIME,A
-		LDIA	D'6'
+		LDIA		D'6'
 		LD		MOTOAB_STOP_TIME,A
 END_WORK_MODE3:
 		JP		END_TIMER_PRC
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 WORK_MODE4:								;speed==4
 		LD		A,SPEED
-		XORIA	04H
-		SNZB	STATUS,Z				;else if(speed==4)
+		XORIA		04H
+		SNZB		STATUS,Z				;else if(speed==4)
 		JP		WORK_MODE_ELSE
 		LD		A,PULSE_TIME
-		HSUBIA	D'226'					;if(pulse_time<=225)
+		HSUBIA		D'226'					;if(pulse_time<=225)
 		SZB		STATUS,C
 		JP		PULSE_TIME_OVER225
 		LD		A,MOTOAB_OUT_MIN
 		LD		MOTOAB_OUT_TIME,A
-		LDIA	D'8'
+		LDIA		D'8'
 		LD		MOTOAB_STOP_TIME,A
 		JP		END_WORK_MODE4
 PULSE_TIME_OVER225:
 		LD		A,PULSE_TIME
-		HSUBIA	D'251'					;else if(pulse_time<=250)
+		HSUBIA		D'251'					;else if(pulse_time<=250)
 		SZB		STATUS,C
 		JP		PULSE_TIME_OVER250
 		CLR		MOTOAB_OUT_TIME
@@ -1047,14 +1047,14 @@ WORK_MODE_ELSE:							;else	L522
 		LD		A,MOTOAB_OUT_MIN
 		LD		MOTOAB_OUT_TIME,A
 		LD		A,SPEED
-		XORIA	01H
+		XORIA		01H
 		SZB		STATUS,Z				;if(speed==1) motoab_stop_time=10;
 		JP		SET_STOP_TIME1
-		LDIA	D'13'
+		LDIA		D'13'
 		LD		MOTOAB_STOP_TIME,A		;else motoab_stop_time=13;
 		JP		END_WORK_ONOFF_JUD
 SET_STOP_TIME1:
-		LDIA	D'10'
+		LDIA		D'10'
 		LD		MOTOAB_STOP_TIME,A
 END_WORK_ONOFF_JUD:
 ;-----------------------------------------------------;	
@@ -1071,12 +1071,12 @@ END_TIMER_PRC:
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 SCANKEY:
 		LD		A,LEDN
-		XORIA	01H
-		SNZB	STATUS,Z				;if(ledn==1)	L226
+		XORIA		01H
+		SNZB		STATUS,Z				;if(ledn==1)	L226
 		JP		END_SCANKEY
-		LDIA	B'11001111'
+		LDIA		B'11001111'
 		LD		TRISB,A
-		LDIA	B'11001000'				;使能PORTB/6/3上拉电阻
+		LDIA		B'11001000'				;使能PORTB/6/3上拉电阻
 		LD		WPUB,A
 		NOP
 		NOP 
@@ -1089,10 +1089,10 @@ SCANKEY:
 		NOP
 		NOP
 		CLR		KEY_VALUE
-		SNZB	SW_POWER				;if(!SW_POWER) key_value|=0x01;	L231
-		SETB	KEY_VALUE,1
+		SNZB		SW_POWER				;if(!SW_POWER) key_value|=0x01;	L231
+		SETB		KEY_VALUE,1
 		LD		A,KEY_VALUE0
-		XORA	KEY_VALUE				;if(key_value!=key_value0)	L232
+		XORA		KEY_VALUE				;if(key_value!=key_value0)	L232
 		SZB		STATUS,Z
 		JP		KEY_PRESSING			;else	L237
 		LD		A,KEY_VALUE
@@ -1101,119 +1101,119 @@ SCANKEY:
 		JP		END_SCANKEY
 KEY_PRESSING:
 		LD		A,KEY_DELAY
-		HSUBIA	D'3'
-		SNZB	STATUS,C				;if(key_delay>=3)	L239
+		HSUBIA		D'3'
+		SNZB		STATUS,C				;if(key_delay>=3)	L239
 		JP		END_KEY_PRESSING
 		LD		A,KEY_VALUE
-		HSUBIA	D'1'
-		SNZB	STATUS,C				;if(key_value)	L241
+		HSUBIA		D'1'
+		SNZB		STATUS,C				;if(key_value)	L241
 		JP		KEY_VALUE_NULL
 		CLR		SLEEP_DELAY
 		SZB		F_ONKEY					;if(!f_onkey)	L244
 		JP		PRESSING_INVALID
 		LD		A,KEY_VALUE				
-		XORIA	01H
-		SNZB	STATUS,Z				;if(key_value==0x01)	L246
+		XORIA		01H
+		SNZB		STATUS,Z				;if(key_value==0x01)	L246
 		JP		END_SCANKEY
-		SETB	F_ONKEY
+		SETB		F_ONKEY
 		CLR		KEY_DELAY1
-		SNZB	F_ONOFF
-		SETB	F_POWER_KEY
-		CALL	KEY_POWER				;L251
+		SNZB		F_ONOFF
+		SETB		F_POWER_KEY
+		CALL		KEY_POWER				;L251
 		JP		END_SCANKEY
 PRESSING_INVALID:						;else	L254
 		SZB		F_ONOFF
 		JP		END_SCANKEY
-		INCR	KEY_DELAY1
+		INCR		KEY_DELAY1
 		LD		A,KEY_DELAY1
-		HSUBIA	D'200'
-		SNZB	STATUS,C
+		HSUBIA		D'200'
+		SNZB		STATUS,C
 		JP		END_SCANKEY
 		SZB		F_OFF_SET				;if((!f_onoff)&&(++key_delay1>=200)&&(!f_off_set))	L256
 		JP		END_SCANKEY
-		CLRB	F_POWER_KEY
-		LDIA	D'150'
+		CLRB		F_POWER_KEY
+		LDIA		D'150'
 		LD		KEY_DELAY1,A
 		LD		A,OFF_SPEED_BUF
-		XORIA	00H
+		XORIA		00H
 		SZB		STATUS,Z				;if(off_speed_buf==0)	L260
 		JP		OFF_SPEED_BUF_ZERO
 		
 		LD		A,OFF_SPEED_BUF
-		XORIA	06H
+		XORIA		06H
 		SZB		STATUS,Z				;if(off_speed_buf==6)	L270
 		JP		OFF_SPEED_BUF_SIX
 		JP		END_SCANKEY
 OFF_SPEED_BUF_ZERO:
-		INCR	OFF_SPEED
+		INCR		OFF_SPEED
 		LD		A,OFF_SPEED
-		HSUBIA	D'6'
-		SNZB	STATUS,C				;if(off_speed>=6)	L263
+		HSUBIA		D'6'
+		SNZB		STATUS,C				;if(off_speed>=6)	L263
 		JP		END_SCANKEY
-		LDIA	D'6'
+		LDIA		D'6'
 		LD		OFF_SPEED,A
 		LD		OFF_SPEED_BUF,A
-		SETB	F_OFF_SET
+		SETB		F_OFF_SET
 		JP		END_SCANKEY
 OFF_SPEED_BUF_SIX:
 		LD		A,OFF_SPEED
-		HSUBIA	D'1'
+		HSUBIA		D'1'
 		SZB		STATUS,C				;if(off_speed>=1) off_speed--;	L272
-		DECR	OFF_SPEED
+		DECR		OFF_SPEED
 		SZB		STATUS,C				;else		L273
 		JP		END_SCANKEY
 		CLR		OFF_SPEED
 		CLR		OFF_SPEED_BUF
-		SETB	F_OFF_SET
+		SETB		F_OFF_SET
 		JP		END_SCANKEY
 KEY_VALUE_NULL:
-		SNZB	F_ONKEY					;else L283
+		SNZB		F_ONKEY					;else L283
 		JP		END_SCANKEY
-		INCR	KEY_DELAY
+		INCR		KEY_DELAY
 		LD		A,KEY_DELAY
-		HSUBIA	D'5'
-		SNZB	STATUS,C				;if((f_onkey)&&(++key_delay>=5))	L285
+		HSUBIA		D'5'
+		SNZB		STATUS,C				;if((f_onkey)&&(++key_delay>=5))	L285
 		JP		END_SCANKEY
-		CLRB	F_ONKEY
-		CLRB	F_OFF_SET
+		CLRB		F_ONKEY
+		CLRB		F_OFF_SET
 		CLR		KEY_DELAY1
 		SZB		F_POWER_KEY
 		JP		POWER_KEY_HIGH			;if(f_power_key)	L290
 		LD		A,OFF_SPEED_BUF
-		XORA	OFF_SPEED
+		XORA		OFF_SPEED
 		SZB		STATUS,Z				;else if(off_speed!=off_speed_buf)	L295
 		JP		END_KEY_VALUE_NULL
 		LD		A,OFF_SPEED
-		HSUBA	OFF_SPEED_BUF
+		HSUBA		OFF_SPEED_BUF
 		SZB		STATUS,C
 		JP		SAVE_OFF_SPEED
 		LD		A,OFF_SPEED
-		HSUBIA	D'1'
-		SNZB	STATUS,C				;if((off_speed_buf>off_speed)&&(off_speed>=1))	L297
+		HSUBIA		D'1'
+		SNZB		STATUS,C				;if((off_speed_buf>off_speed)&&(off_speed>=1))	L297
 		JP		SAVE_OFF_SPEED
-		CLRB	F_ONOFF
+		CLRB		F_ONOFF
 		LD		A,SPEED_BUF
-		XORIA	00H						
-		SNZB	STATUS,Z				;if(speed_buf==0) speed_buf=1;	L300
+		XORIA		00H						
+		SNZB		STATUS,Z				;if(speed_buf==0) speed_buf=1;	L300
 		JP		RESTORE_SPEED
-		LDIA	D'1'
+		LDIA		D'1'
 		LD		SPEED_BUF,A
 RESTORE_SPEED:
 		LD		A,SPEED_BUF
 		LD		SPEED,A
-		CALL	OUT_BUF_PRC				;L302
+		CALL		OUT_BUF_PRC				;L302
 SAVE_OFF_SPEED:
 		LD		A,OFF_SPEED_BUF
 		LD		OFF_SPEED,A
 		JP		END_KEY_VALUE_NULL
 POWER_KEY_HIGH:
-		CLRB	F_POWER_KEY
-		CALL	KEY_POWER()				;L293
+		CLRB		F_POWER_KEY
+		CALL		KEY_POWER()				;L293
 END_KEY_VALUE_NULL:
-		CLRB	F_POWER_KEY
+		CLRB		F_POWER_KEY
 		JP		END_SCANKEY
 END_KEY_PRESSING:
-		INCR	KEY_DELAY
+		INCR		KEY_DELAY
 END_SCANKEY:
 		RET
 ;*****************************************************;
@@ -1225,37 +1225,37 @@ KEY_POWER:
 		JP		BAT_LOW_NOT_CHARG
 		SZB		F_CHARG
 		JP		BAT_LOW_NOT_CHARG					;if((!f_bat_low)&&(!f_charg))	L165
-		SETB	F_OFF_SET
+		SETB		F_OFF_SET
 		SZB		F_ONOFF								;if(!f_onoff)	L168
 		JP		PRESSING_AGAIN
-		SETB	F_ONOFF
+		SETB		F_ONOFF
 		LD		A,SPEED_BUF
-		XORIA	00H
-		SNZB	STATUS,Z
+		XORIA		00H
+		SNZB		STATUS,Z
 		JP		RESTORE_SPEED1
-		LDIA	D'1'
+		LDIA		D'1'
 		LD		SPEED_BUF,A
 RESTORE_SPEED1:
 		LD		A,SPEED_BUF
 		LD		SPEED,A
 		SZB		F_BRATH
-		CLRB	F_BRATH
+		CLRB		F_BRATH
 		JP		ONOFF_DETECT
 PRESSING_AGAIN:
 		LD		A,WORK_TIME
-		HSUBIA	D'6'
+		HSUBIA		D'6'
 		SZB		STATUS,C
 		JP		STOP_WORKING		
 CHANGE_SPEED:										;else if(work_time<=16)	L178
-		INCR	SPEED
+		INCR		SPEED
 		LD		A,SPEED
-		HSUBIA	D'6'
-		SNZB	STATUS,C
+		HSUBIA		D'6'
+		SNZB		STATUS,C
 		JP		END_CHANGE_SPEED
-		LDIA	D'1'
+		LDIA		D'1'
 		LD		SPEED,A
-		CLRB	F_ONOFF
-		CLRB	F_BRATH
+		CLRB		F_ONOFF
+		CLRB		F_BRATH
 		CLR		BRATH_TIME
 		CLR		BRATH_CYCLE
 		CLR		LED_ON_TIME
@@ -1265,16 +1265,16 @@ END_CHANGE_SPEED:
 		CLR		WORK_TIME
 		JP		ONOFF_DETECT
 STOP_WORKING:										;else	L193
-		CLRB	F_ONOFF
-		SETB	F_BRATH
+		CLRB		F_ONOFF
+		SETB		F_BRATH
 		CLR		BRATH_TIME
 		CLR		BRATH_CYCLE
 		CLR		LED_ON_TIME
 ;-----------------------------------------------------;			
 ONOFF_DETECT:										;if(f_onoff)	L201
-		SNZB	F_ONOFF
+		SNZB		F_ONOFF
 		JP		STOP_ALL_MOTO
-		CALL	OUT_BUF_PRC							;L203
+		CALL		OUT_BUF_PRC							;L203
 		JP		END_KEY_POWER
 STOP_ALL_MOTO:										;else	L205
 		CLR		MOTOAB_OUT_TIME
@@ -1284,14 +1284,14 @@ STOP_ALL_MOTO:										;else	L205
 		JP		END_KEY_POWER
 ;-----------------------------------------------------;		
 BAT_LOW_NOT_CHARG:
-		SNZB	F_BAT_LOW
+		SNZB		F_BAT_LOW
 		JP		END_KEY_POWER
 		SZB		F_BRATH
 		JP		END_KEY_POWER
 		SZB		F_CHARG
 		JP		END_KEY_POWER
-		CLRB	F_ONOFF
-		CLRB	F_BRATH
+		CLRB		F_ONOFF
+		CLRB		F_BRATH
 		CLR		BRATH_TIME
 		CLR		BRATH_CYCLE
 END_KEY_POWER:
@@ -1302,65 +1302,65 @@ END_KEY_POWER:
 ;*****************************************************;
 OUT_BUF_PRC:										;L122
 		LD		A,SPEED
-		XORIA	01H
+		XORIA		01H
 		SZB		STATUS,Z
 		JP		MODE_SPEED_1
 		LD		A,SPEED
-		XORIA	02H
+		XORIA		02H
 		SZB		STATUS,Z
 		JP		MODE_SPEED_2
 		LD		A,SPEED
-		XORIA	03H
+		XORIA		03H
 		SZB		STATUS,Z
 		JP		MODE_SPEED_3
 		LD		A,SPEED
-		XORIA	04H
+		XORIA		04H
 		SZB		STATUS,Z
 		JP		MODE_SPEED_4
 		LD		A,SPEED
-		XORIA	05H
+		XORIA		05H
 		SZB		STATUS,Z
 		JP		MODE_SPEED_5
 		JP		END_OUT_BUF_PRC
 MODE_SPEED_1:
-		LDIA	D'10'
+		LDIA		D'10'
 		LD		MOTOAB_OUT_TIME,A
 		LD		MOTOAB_STOP_TIME,A
 		LD		MOTOAB_OUT_MIN,A
 		LD		MOTOAB_OUT_MAX,A
 		JP		END_OUT_BUF_PRC
 MODE_SPEED_2:
-		LDIA	D'8'
+		LDIA		D'8'
 		LD		MOTOAB_OUT_TIME,A
 		LD		MOTOAB_OUT_MIN,A
-		LDIA	D'12'
+		LDIA		D'12'
 		LD		MOTOAB_STOP_TIME,A
-		LDIA	D'10'
+		LDIA		D'10'
 		LD		MOTOAB_OUT_MAX,A
 		JP		END_OUT_BUF_PRC		
 MODE_SPEED_3:
-		LDIA	D'12'
+		LDIA		D'12'
 		LD		MOTOAB_OUT_TIME,A
 		LD		MOTOAB_OUT_MAX,A
-		LDIA	D'6'
+		LDIA		D'6'
 		LD		MOTOAB_STOP_TIME,A
-		LDIA	D'10'
+		LDIA		D'10'
 		LD		MOTOAB_OUT_MIN,A
 		JP		END_OUT_BUF_PRC
 MODE_SPEED_4:
-		LDIA	D'9'
+		LDIA		D'9'
 		LD		MOTOAB_OUT_TIME,A
 		LD		MOTOAB_OUT_MIN,A
 		LD		MOTOAB_OUT_MAX,A
-		LDIA	D'8'
+		LDIA		D'8'
 		LD		MOTOAB_STOP_TIME,A
 		JP		END_OUT_BUF_PRC
 MODE_SPEED_5:
-		LDIA	D'6'
+		LDIA		D'6'
 		LD		MOTOAB_OUT_TIME,A
 		LD		MOTOAB_OUT_MIN,A
 		LD		MOTOAB_OUT_MAX,A
-		LDIA	D'13'
+		LDIA		D'13'
 		LD		MOTOAB_STOP_TIME,A
 		JP		END_OUT_BUF_PRC
 END_OUT_BUF_PRC:
@@ -1371,52 +1371,52 @@ END_OUT_BUF_PRC:
 ;*****************************************************;
 TEMP_DATA_PRC:
 		LD		A,LEDN
-		XORIA	03H
-		SNZB	STATUS,Z
+		XORIA		03H
+		SNZB		STATUS,Z
 		JP		END_TEMP_DATA_PRC
-		SNZB	F_CHARG
+		SNZB		F_CHARG
 		JP		VDD_LOW
 VDD_OVER3P7V:
 		LD		A,NTC_RAM
-		HSUBIA	D'84'
+		HSUBIA		D'84'
 		SZB		STATUS,C
 		JP		END_VDD_OVER3P7V
-		INCR	BAT_HIG_TIME
+		INCR		BAT_HIG_TIME
 		LD		A,BAT_HIG_TIME
-		HSUBIA	D'10'
-		SNZB	STATUS,C
+		HSUBIA		D'10'
+		SNZB		STATUS,C
 		JP		VDD_LOW
-		CLRB	F_BAT_LOW
-		CLRB	F_LOW_3V
+		CLRB		F_BAT_LOW
+		CLRB		F_LOW_3V
 		JP		VDD_LOW
 END_VDD_OVER3P7V:
 		CLR		BAT_HIG_TIME
 VDD_LOW:
 		LD		A,NTC_RAM
-		HSUBIA	D'110'
+		HSUBIA		D'110'
 		SZB		STATUS,C
 		JP		LESS_THAN2P8
 		LD		A,NTC_RAM
-		HSUBIA	D'103'
+		HSUBIA		D'103'
 		SZB		STATUS,C
 		JP		LESS_THAN3P0
 		JP		WORK_NORMALLY
 LESS_THAN2P8:		
-		INCR	BAT_LOW_TIME
+		INCR		BAT_LOW_TIME
 		LD		A,BAT_LOW_TIME
-		HSUBIA	D'10'
-		SNZB	STATUS,C
+		HSUBIA		D'10'
+		SNZB		STATUS,C
 		JP		END_TEMP_DATA_PRC
-		CLRB	F_BAT_LOW
+		CLRB		F_BAT_LOW
 		JP		END_TEMP_DATA_PRC
 LESS_THAN3P0:		
 		CLR		BAT_LOW_TIME
-		INCR	LOW_3V_TIME
+		INCR		LOW_3V_TIME
 		LD		A,LOW_3V_TIME
-		HSUBIA	D'10'
-		SNZB	STATUS,C
+		HSUBIA		D'10'
+		SNZB		STATUS,C
 		JP		END_TEMP_DATA_PRC
-		CLRB	F_LOW_3V
+		CLRB		F_LOW_3V
 		JP		END_TEMP_DATA_PRC
 WORK_NORMALLY:
 		CLR		BAT_LOW_TIME
