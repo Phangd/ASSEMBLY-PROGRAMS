@@ -2,7 +2,7 @@
 ;*****************************************************;
 		FLAG0		EQU	?
 		T2MS_TIMER	EQU ?
-		TN			EQU	?
+		TN		EQU	?
 		CODE1		EQU	?
 		CODE2		EQU	?
 		REMOTE_NUM	EQU	?
@@ -16,8 +16,8 @@
 		KEY_DELAY1	EQU	?
 		KEY_DELAY2	EQU	?
 		REMOTE_BUF	EQU	?
-		T_REMOTE1   EQU	?
-		T_REMOTE2   EQU	?
+		T_REMOTE1   	EQU	?
+		T_REMOTE2   	EQU	?
 		T_REMOTE3	EQU	?
 ;*****************************************************;
 		F_ONOFF		EQU	FLAG0,0
