@@ -146,7 +146,7 @@ NOT_FULL:								;else	L711
 		CLRB		LED11					;else LED11_OFF;
 		SETB		LED11
 END_CHARG_DETECT:
-		JP		WORK_DISPOSAL			;if(f_onoff)		L814
+		JP		WORK_DISPOSAL				;if(f_onoff)		L814
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 BRATH_DETECT:
 		CLR		SLEEP_DELAY
@@ -417,7 +417,7 @@ RESET:
 		CLRWDT
 		CLR		INTCON					;关闭全局中断、外设中断
 		CLR		STATUS
-POWER_ON_DELAY:							;上电延迟100us
+POWER_ON_DELAY:								;上电延迟100us
 		INCR		POWER_DELAY
 		LD		A,POWER_DELAY
 		HSUBIA		D'100'
@@ -547,7 +547,7 @@ DISPLAY:
 		CLR		BRATH_CYCLE
 ;-----------------------------------------------------;
 		SZB		F_ONOFF					
-		JP		POWER_ON_JUD			;if(f_onoff)	L550
+		JP		POWER_ON_JUD				;if(f_onoff)	L550
 		SZB		F_ONKEY
 		JP		F_ONKEY_JUD				;else if(f_onkey)	L578
 		JP		END_DISPLAY
@@ -560,12 +560,12 @@ POWER_ON_JUD:
 		JP		WORK_DISPLAY
 BAT_LOW_WORK:
 		SETB		LED_BUF_5				;led_buf|=0x20;
-		SNZB		FLASH_TIME_0			;if(flash_time&0x01) led_buf&=0xdf;	L555
+		SNZB		FLASH_TIME_0				;if(flash_time&0x01) led_buf&=0xdf;	L555
 		JP		WORK_DISPLAY
 		SZB		FLASH_TIME_0
 		LDIA		B'11011111'
 		ANDA		LED_BUF
-WORK_DISPLAY:							;switch(speed)	L557
+WORK_DISPLAY:								;switch(speed)	L557
 		LD		A,SPEED
 		XORIA		D'1'						;case 1:
 		SZB		STATUS,Z
