@@ -1,4 +1,4 @@
-		#INCLUDE	CMS6052D.H           
+		#INCLUDE		CMS6052D.H           
 ;***********************************************************************;
 ;***********************************************************************;
 		OUT_FAN			EQU 	P1,0
@@ -11,6 +11,7 @@
 		FLAG0			EQU 	?
 		T2MS_TIMER		EQU 	?
 		POWER_DELAY1	EQU		?
+		POWER_DELAY2	EQU		?
 		ERR_CNT			EQU		?
 		OK_CNT			EQU		?
 		COUNTER			EQU		?
@@ -29,8 +30,6 @@
 		F_ZERO_UP		EQU		FLAG0,2
 		F_ZERO_ERR		EQU 	FLAG0,3
 		F_ONKEY			EQU 	FLAG0,4
-		
-		F_T2MS			EQU		T2MS_TIMER,5
 ;***********************************************************************;
 		ORG				0000H
 		JP				RESET
@@ -44,7 +43,7 @@
 		ORG				0008H
 		JP				INT_SERIVE
 ;***********************************************************************;
-INT_SERIVE:											;定时中断程序(125us)
+INT_SERIVE:											;定时中断程序(50us)
 		PUSH
 		SNZB			INTRQ,TC0IRQ
 		JP				EXIT_INT
@@ -67,7 +66,7 @@ ZERO_PPULSE:										;正
 		SZB				F_ZERO_UP
 		JP				END_ZERO_PRC
 		LD				A,ZERO_CNT
-		HSUBIA			D'3'
+		HSUBIA			D'7'
 		SNZB			STATUS,C
 		JP				END_ZERO_PRC
 		SETB			F_ZERO_UP
@@ -77,7 +76,7 @@ ZERO_NPULSE:										;负
 		SNZB			F_ZERO_UP
 		JP				END_ZERO_PRC
 		LD				A,ZERO_CNT
-		HSUBIA			D'3'
+		HSUBIA			D'7'
 		SNZB			STATUS,C
 		JP				END_ZERO_PRC
 		CLRB			F_ZERO_UP
@@ -91,7 +90,7 @@ TRACE_PRC:											;可控硅驱动
 		XORIA			D'1'
 		SNZB			STATUS,Z
 		JP				OUT_SPEED_LOW		
-		LDIA			D'5'						;GAO档
+		LDIA			D'40'						;GAO档
 		LD				PULSE_TIME,A
 		JP				OUT_TRACE
 OUT_SPEED_LOW:		
@@ -99,7 +98,7 @@ OUT_SPEED_LOW:
 		XORIA			D'2'
 		SNZB			STATUS,Z
 		JP				TRACE_OFF
-		LDIA			D'15'						;DI档
+		LDIA			D'74'						;DI档
 		LD				PULSE_TIME,A
 OUT_TRACE:		
 		LD				A,ZERO_CNT			
@@ -108,7 +107,7 @@ OUT_TRACE:
 		JP				TRACE_OFF
 		LD				A,ZERO_CNT
 		HSUBA			PULSE_TIME
-		HSUBIA			D'20'
+		HSUBIA			D'50'
 		SZB				STATUS,C
 		JP				TRACE_OFF
 TRACE_ON:		
@@ -133,8 +132,6 @@ RESET:
 		LDIA			B'00010000'					;P5.4 OUTPUT
 		LD				P5M,A
 		
-		LDIA			B'00000000'
-		LD				P0UR,A				  
 		LDIA			B'00001100'
 		LD				P1UR,A
 		LDIA			B'00000000'
@@ -186,10 +183,17 @@ POWER_ON_DELAY:
 		JP				POWER_ON_DELAY
 		CLR				POWER_DELAY1
 		CLRWDT
+		SZINCR			POWER_DELAY2
+		NOP
+		LD				A,POWER_DELAY2
+		HSUBIA			D'3'
+		SNZB			STATUS,C
+		JP				POWER_ON_DELAY
+		CLR				POWER_DELAY2
 INIT_RAM:
-		LDIA			B'01100100'					;禁止TC0定时器，TC0 4分频，内部时钟
-		LD				TC0M,A						;TC0自动装载，P5/4输入口，禁止PWM输出
-		LDIA			D'131'
+		LDIA			B'01110100'					;禁止TC0定时器，TC0 fcpu/2，内部时钟
+		LD				TC0M,A						;TC0自动装载，P5/4输出口，禁止PWM输出
+		LDIA			D'206'
 		LD				TC0R,A						;
 		LD				TC0C,A						;
 		CLRB			INTRQ,TC0IRQ				;清TC0中断请求标志位
@@ -202,10 +206,12 @@ INIT_RAM:
 ;***********************************************************************;
 ;***********************************************************************;
 MAINLOOP:
-		SNZB  			F_T2MS
+		LD				A,T2MS_TIMER
+		HSUBIA			D'40'
+		SNZB			STATUS,C
 		JP				MAINLOOP
-		CLRB  			F_T2MS
-		CLRWDT	
+		CLR 			T2MS_TIMER
+		CLRWDT
 		CALL			SCANKEY
 		CALL			WORK_SUB
 		JP				MAINLOOP
@@ -269,6 +275,13 @@ SCANKEY:
 		LD				P1UR,A
 		
 		CLR				KEY_VALUE
+		NOP
+		NOP
+		NOP
+		NOP
+		NOP
+		NOP
+		NOP
 		NOP
 		NOP
 		NOP
