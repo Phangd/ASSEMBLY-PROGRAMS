@@ -4,14 +4,14 @@
 		FLAG0			EQU		?
 		FLAG1			EQU		?
 		TIME_2MS		EQU		?
-		REMOTE_NUM      EQU		?
-		CODE1           EQU		?
-		CODE2           EQU		?
-		TN				EQU		?
+		REMOTE_NUM      	EQU		?
+		CODE1           	EQU		?
+		CODE2           	EQU		?
+		TN			EQU		?
 		CODE1_BUF		EQU		?
 		T_OUTPUT		EQU		?
-		POWER_DELAY1	EQU		?
-		TIMER_TIMEOUT	EQU		?
+		POWER_DELAY1		EQU		?
+		TIMER_TIMEOUT		EQU		?
 		TIMER_250MS		EQU		?
 ;******************************************************************;
 ;		Bit Flag Definition				   						   ;
