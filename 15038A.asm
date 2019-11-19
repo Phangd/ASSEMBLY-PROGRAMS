@@ -1,22 +1,23 @@
-		#INCLUDE		CMS6053D.H    
+	  	#INCLUDE		CMS6053D.H    
 ;******************************************************************;
 		FLAG0			EQU		?
 		FLAG1           EQU		?
+		FLAG2			EQU		?
 		KEY_DELAY1      EQU		?
 		KEY_DELAY2      EQU		?
 		KEY_VALUE       EQU		?
 		KEY_VALUE0      EQU		?
 		TIMER_2MS       EQU		?
-		TN		EQU		?
+		TN				EQU		?
 		BIT_NUM         EQU		?
 		CODE1           EQU		?
 		CODE1_BUF       EQU		?
 		CODE2           EQU		?
 		CODE2_BUF       EQU		?
-		SPEED		EQU		?
-		SPEED_BUF	EQU		?
+		SPEED			EQU		?
+		SPEED_BUF		EQU		?
 		HOURS           EQU		?
-		HOURS_BUF	EQU		?
+		HOURS_BUF		EQU		?
 		COUNTER         EQU		?
 		TIMER_250MS     EQU		?
 		T_REMOTE1       EQU		?
@@ -25,25 +26,34 @@
 		PLUSE_TIME		EQU		?
 		TIMER_MIN		EQU		?
 		TIMER_SEC		EQU		?
-		DATA1			EQU		?
-		DATA2			EQU		?
-		DATA_BUF1		EQU		?
-		DATA_BUF2		EQU		?
+		DATA			EQU		?
+		DATA_BUF		EQU		?
 		DELAY_TIMER		EQU		?
+		RECORD_TIME		EQU		?
+		BIT_TIME		EQU		?
+		T_SEND			EQU		?
+		BIT_CONT		EQU		?
 ;******************************************************************;
 		F_T2MS			EQU		TIMER_2MS,4
 		
-		F_ONOFF			EQU		FLAG0,0
-		F_HIG			EQU		FLAG0,1
-		F_MID			EQU		FLAG0,2
+		F_ONOFF			EQU		FLAG0,7
+		F_OSC			EQU		FLAG0,6
+		F_HIG			EQU		FLAG0,5
+		F_MID			EQU		FLAG0,4
 		F_LOW			EQU		FLAG0,3
-		F_OSC			EQU		FLAG0,4
+		
 		
 		F_PULSE_DEAL	EQU		FLAG1,0
 		F_PRESS			EQU		FLAG1,1
 		F_ON_REMOTE		EQU		FLAG1,2
 		F_RECEIVE_OK	EQU		FLAG1,3
 		F_DISPLAY		EQU		FLAG1,4
+		F_SEND			EQU		FLAG1,5
+		F_BIT_HEAD      EQU		FLAG1,6
+		F_BIT_END       EQU		FLAG1,7
+		
+		F_BIT1          EQU		FLAG2,0
+		F_BIT0          EQU		FLAG2,1
 ;******************************************************************;
 		OUT_DATA		EQU		P2,3
 		REMOTE			EQU		P1,1
@@ -146,61 +156,98 @@ ERROR_PULSE:
 END_REMOTE_RECEIVE:
 ;------------------------------------------------------------------;		
 SEND_DATA:									
+		SNZB			F_SEND				;BIT_END中才清零
+		JP				SEND0               
+		SNZB			F_BIT_HEAD          ;BIT_END中才清零,发完头部会置一
+		JP				BIT_HEAD            
+		SZB				F_BIT_END           ;发完数据才置1,BIT_END中会清零
+		JP				BIT_END             
+		SZB				F_BIT1              ;发完数据包头部被置0
+		JP				SEND_BIT1           
+		SZB				F_BIT0              ;发完数据包头部被置0
+		JP				SEND_BIT0
+SEND_COUNT:
+		SZINCR			BIT_NUM				;发送的位数
+		NOP
+		RLCR			DATA
+		SNZB			STATUS,C
+		JP				BIT_ZERO
+		SETB			F_BIT1				;DATA的第七位为1,置发1标志位,把第0位置1(左移之后第零位补得是C中的0)
+		SETB			DATA,0
+		CLR				PLUSE_TIME
+		JP				SEND_BIT1
+BIT_ZERO:
+		SETB			F_BIT0				;第七位为0,置发0标志位为1,把第0位置0
+		CLRB			DATA,0
+		CLR 			PLUSE_TIME
+SEND_BIT0:
 		SZINCR			PLUSE_TIME
 		NOP
-		LD				A,BIT_NUM
-		SNZB			STATUS,Z
-		JP				SEND_START
-SEND_HEAD:									; 开头 5ms高电平
 		LD				A,PLUSE_TIME
-		HSUBIA			D'40'
+		HSUBIA			D'5'
+		SNZB			STATUS,C
+		JP				SEND1
+		LD				A,PLUSE_TIME
+		HSUBIA			D'9'
+		SNZB			STATUS,C
+		JP				SEND0
+		CLRB			F_BIT0
+		JP				SEND_DEAL
+SEND_BIT1:
+		SZINCR			PLUSE_TIME
+		NOP
+		LD				A,PLUSE_TIME
+		HSUBIA			D'5'
+		SNZB			STATUS,C
+		JP				SEND1
+		LD				A,PLUSE_TIME
+		HSUBIA			D'17'
+		SNZB			STATUS,C
+		JP				SEND0
+		CLRB			F_BIT1
+SEND_DEAL:
+		CLR				PLUSE_TIME
+		LD				A,BIT_NUM
+		HSUBIA			D'16'
+		SNZB			STATUS,C
+		JP				END_SEND_DATA
+		CLR				BIT_NUM
+		SETB			OUT_DATA
+		SETB			F_BIT_END
+		JP				END_SEND_DATA
+BIT_HEAD:
+		SZINCR			PLUSE_TIME
+		NOP
+		LD				A,PLUSE_TIME
+		HSUBIA			D'32'
+		SNZB			STATUS,C
+		JP				SEND1
+		LD				A,PLUSE_TIME
+		HSUBIA			D'63'
+		SNZB			STATUS,C
+		JP				SEND0
+		CLR				PLUSE_TIME
+		SETB			F_BIT_HEAD
+		CLRB			F_BIT0
+		CLRB			F_BIT1
+		JP				END_SEND_DATA
+BIT_END:
+		SZINCR			PLUSE_TIME
+		NOP
+		LD				A,PLUSE_TIME
+		HSUBIA			D'5'
 		SNZB			STATUS,C
 		JP				SEND1
 		CLR				PLUSE_TIME
-		LDIA			01H
-		LD				BIT_NUM,A
-		LD				A,DATA_BUF1
-		LD				DATA1,A
-		LD				A,DATA_BUF2
-		LD				DATA2,A
+		CLRB			F_BIT_END
+		CLRB			F_BIT_HEAD
+		CLRB			F_SEND
 		JP				SEND0
-SEND_START:
-		LD				A,BIT_NUM
-		HSUBIA			D'17'				; 16位代码
-		SZB				STATUS,C
-		JP				SEND_END
-		SNZB			DATA2,0
-		JP				BIT0
-BIT1:										; "1" 1.5MS脉宽
-		LD				A,BIT_NUM
-		HSUBIA			D'12'
-		SNZB			STATUS,C
-		JP				END_SEND_DATA
-		JP				TRANS_DEAL
-BIT0:										; "0" 4MS脉宽
-		LD				A,BIT_NUM
-		HSUBIA			D'4'
-		SNZB			STATUS,C
-		JP				END_SEND_DATA
-TRANS_DEAL:
-		CLR				PLUSE_TIME
-		SZINCR			BIT_NUM
-		NOP
-		RLCR			DATA2
-		RLCR			DATA1
-		LDIA			B'00000100'			; 取反P2.2,区分不同的位
-		XORR			P2
-		JP				END_SEND_DATA
-SEND_END:									; 结束0.5ms低电平
-		LD				A,BIT_NUM
-		HSUBIA			D'4'
-		SZB				STATUS,C
-		CLR				BIT_NUM
-SEND0:
-		CLRB			OUT_DATA
-		JP				END_SEND_DATA		
 SEND1:
 		SETB			OUT_DATA
+		JP				END_SEND_DATA
+SEND0:
+		CLRB			OUT_DATA
 END_SEND_DATA:
 ;------------------------------------------------------------------;
 EXIT_INT:
@@ -235,7 +282,7 @@ RESET:
 		LDIA			B'00000000'
 		LD				P1,A
 		LD				P5,A
-		LDIA			B'00000100'
+		LDIA			B'00001100'
 		LD				P2,A
 		
 		
@@ -301,35 +348,47 @@ MAINLOOP:
 TIMER_SUB:
 		SZINCR			TIMER_250MS
 		NOP
+		LD				A,TIMER_250MS
 		HSUBIA			D'125'
 		SNZB			STATUS,C
-		JP				END_TIMER_SUB
+		JP				RECORD_SEND_DATA
 		CLR				TIMER_250MS
+		SZINCR			T_SEND
+		NOP
 		SZINCR			TIMER_SEC
 		NOP
 		HSUBIA			D'4'
 		SNZB			STATUS,C
-		JP				END_TIMER_SUB
+		JP				RECORD_SEND_DATA
 		CLR				TIMER_SEC
 		SZINCR			TIMER_MIN
 		NOP
 		HSUBIA			D'60'
 		SNZB			STATUS,C
-		JP				END_TIMER_SUB
+		JP				RECORD_SEND_DATA
 		CLR				TIMER_MIN
 		LD				A,HOURS_BUF
 		HSUBIA			D'1'
 		SNZB			STATUS,C
-		JP				TIME_OVER
+		JP				RECORD_SEND_DATA
 		SZDECR			HOURS_BUF
 		NOP
-		JP				END_TIMER_SUB
-TIME_OVER:
+		LD				A,HOURS_BUF
+		HSUBIA			D'1'
+		SNZB			STATUS,C
 		CLRB			F_ONOFF
-		CLRB			F_HIG
-		CLRB			F_MID
-		CLRB			F_LOW
-		CLRB			F_OSC
+RECORD_SEND_DATA:
+		LD				A,T_SEND
+		HSUBIA			D'6'
+		SNZB			STATUS,C
+		JP				END_TIMER_SUB
+		CLR				T_SEND
+		CLR				BIT_NUM
+		CLR				BIT_TIME
+		LD				A,DATA_BUF
+		LD				DATA,A
+		CLRB			F_BIT_HEAD
+		SETB			F_SEND
 END_TIMER_SUB:
 		RET
 ;******************************************************************;		
@@ -529,21 +588,14 @@ DIS_SPEED:
 		JP				MODE_LOW
 		JP				END_DIS_SPEED
 MODE_HIG:
-		CLRB			LED_COM1
 		SETB			LED_COM3
-		CLRB			LED_COM4
 		JP				END_DIS_SPEED
 MODE_MID:
-		CLRB			LED_COM1
-		CLRB			LED_COM3
 		SETB			LED_COM4
 		JP				END_DIS_SPEED
 MODE_LOW:
 		SETB			LED_COM1
-		CLRB			LED_COM3
-		CLRB			LED_COM4
 END_DIS_SPEED:
-		SETB			LED_SEG1
 		CLRB			LED_SEG2
 		SETB			LED_COM2
 		JP				END_DISPLAY
@@ -560,7 +612,6 @@ DIS_TIMER:
 		SETB			LED_COM4
 END_DIS_TIMER:
 		CLRB			LED_SEG1
-		SETB			LED_SEG2
 		SETB			LED_COM1
 ;------------------------------------------------------------------;	
 END_DISPLAY:
@@ -604,7 +655,17 @@ WORK_LOW:
 		CLRB			F_HIG
 		CLRB			F_MID
 		SETB			F_LOW
+		JP				END_WORK_SUB
 END_WORK_SUB:
+		LD				A,FLAG0
+		XORA			DATA_BUF
+		SZB				STATUS,Z
+		JP				END_WORK_SUB1
+		LD				A,FLAG0
+		LD				DATA_BUF,A
+		LDIA			D'20'
+		LD				T_SEND,A
+END_WORK_SUB1:
 		RET
 ;******************************************************************;
 REMOTE_DEAL:
