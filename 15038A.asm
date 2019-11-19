@@ -7,16 +7,16 @@
 		KEY_VALUE       EQU		?
 		KEY_VALUE0      EQU		?
 		TIMER_2MS       EQU		?
-		TN				EQU		?
+		TN		EQU		?
 		BIT_NUM         EQU		?
 		CODE1           EQU		?
 		CODE1_BUF       EQU		?
 		CODE2           EQU		?
 		CODE2_BUF       EQU		?
-		SPEED			EQU		?
-		SPEED_BUF		EQU		?
+		SPEED		EQU		?
+		SPEED_BUF	EQU		?
 		HOURS           EQU		?
-		HOURS_BUF		EQU		?
+		HOURS_BUF	EQU		?
 		COUNTER         EQU		?
 		TIMER_250MS     EQU		?
 		T_REMOTE1       EQU		?
