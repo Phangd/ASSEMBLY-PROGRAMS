@@ -102,32 +102,43 @@
 		T_TEMP_HOLD 	EQU	56H
 		T_TEMP_HOLD0	EQU	57H
 		LEDTR1			EQU	58H 
-		LEDTR2      	EQU	59H    	
-		LED_BUF1		EQU	5AH
-		LED_BUF2    	EQU	5BH
-		BIT_NUM			EQU	5CH
-		DATA        	EQU	5DH
-		DATA1           EQU	5EH
-		DATA_BUF        EQU	5FH
-		DATA1_BUF       EQU	60H
-		PLUSE_TIME      EQU	61H
-		T_SEND          EQU	62H
-		T_ROOM_REAL 	EQU	63H
-		T_ROOM_DISP     EQU	64H
-		TN				EQU	65H
-		TN1             EQU	66H
-		CODE1           EQU	67H
-		CODE2           EQU	68H
-		REMOTE_NUM      EQU	69H
-		REMOTE_NUM1		EQU	6AH
-		T_REC_TIMEOUT	EQU	6BH
-		CHECK_BUF	    EQU	6CH			;SEND CHECK BUF
-		CHECK_BUF1		EQU	6DH			;RECEIVE CHECK BUF
-		CHECK_BUF2		EQU	6EH         ;RECEIVE CHECK BUF1
-		CODE1_BUF		EQU	6FH
-		CODE2_BUF		EQU	70H
-		T_DOWN			EQU	71H
-		T_NODOWN		EQU	72H
+		LEDTR2      	EQU	59H
+		LEDTR3			EQU	5AH
+		LED_BUF1		EQU	5BH
+		LED_BUF2    	EQU	5CH
+		BIT_NUM			EQU	5DH
+		DATA        	EQU	5EH
+		DATA1           EQU	5FH
+		DATA_BUF        EQU	60H
+		DATA1_BUF       EQU	61H
+		PLUSE_TIME      EQU	62H
+		T_SEND          EQU	63H
+		T_ROOM_REAL 	EQU	64H
+		T_ROOM_DISP     EQU	65H
+		TN				EQU	66H
+		TN1             EQU	67H
+		CODE11         	EQU	68H
+		CODE12          EQU	69H
+		REMOTE_NUM      EQU	6AH
+		REMOTE_NUM1		EQU	6BH
+		T_REC_TIMEOUT	EQU	6CH
+		CHECK_BUF	    EQU	6DH			;SEND CHECK BUF
+		CHECK_BUF1		EQU	6EH			;RECEIVE CHECK BUF
+		CHECK_BUF2		EQU	6FH         ;RECEIVE CHECK BUF1
+		CODE1_BUF		EQU	70H
+		CODE2_BUF		EQU	71H
+		T_DOWN			EQU	72H
+		T_NODOWN		EQU	73H
+		CODE0			EQU	74H
+		CODE1           EQU	75H
+		CODE2           EQU	76H
+		CODE3           EQU	77H
+		CODE4           EQU	78H
+		CODE5           EQU	79H
+		CODE6           EQU	7AH
+		CODE7           EQU	7BH
+		CODE8           EQU	7CH
+		CODE9           EQU	7DH
 ;******************************************************************;
 		F_T1MS			EQU	T1MS_TIMER,3
 		
@@ -187,6 +198,8 @@
 		F_CHECK10       EQU	FLAG6,0
 		;FLAG7
 		F_NODOWN		EQU	FLAG7,0
+		F_RISE_YK		EQU	FLAG7,1
+		F_REMOTE		EQU	FLAG7,2
 		
 		F_LED_1B		EQU	LEDTR1,7
 		F_LED_1A		EQU	LEDTR1,6
@@ -203,6 +216,11 @@
 		F_LED_2E		EQU	LEDTR2,3
 		F_LED_2F		EQU	LEDTR2,2
 		F_LED_2G		EQU	LEDTR2,1
+
+		F_LED_TIMER		EQU	LEDTR3,0
+		F_LED_AUTO		EQU	LEDTR3,1
+		F_LED_FAN1		EQU	LEDTR3,2
+		F_LED_FAN2		EQU	LEDTR3,3
 ;******************************************************************;
 ;******************************************************************;
 		ORG			00H
@@ -232,18 +250,78 @@ TIMER0:
 		INCR		T1MS_TIMER
 END_TIMER0:
 ;---------------------------- REMOTE ------------------------------;
-
-
-
-
+REMOTE_RECEIVE:	
+			LD   	A,TN
+			HSUBIA  D'200'
+			SNZB	C
+			INCR 	TN
+			SZB		REMOTE
+			JP		YK_NPULSE
+YK_PPULSE:
+			SZB		F_RISE_YK
+			JP		END_REMOTE
+			SETB	F_RISE_YK			; 上升沿
+			LD		A,TN
+			HSUBIA	D'20';12
+			SZB		C
+			JP		ERROR_REMOTE
+			LD		A,TN
+			HSUBIA	D'8';2
+			SNZB	C
+			JP		ERROR_REMOTE
+			CLR		TN
+			JP		END_REMOTE
+YK_NPULSE:
+			SNZB	F_RISE_YK
+			JP		END_REMOTE
+			CLRB	F_RISE_YK			; 下降沿
+YK_NPULSE1:	
+			RLCR	CODE0
+			RLCR	CODE2
+			RLCR	CODE3
+			RLCR	CODE4
+			RLCR	CODE5
+			RLCR	CODE6
+			RLCR	CODE7
+			RLCR	CODE8
+			RLCR	CODE9
+			LD		A,TN
+			HSUBIA	D'20'				; >2ms?
+			SZB		C
+			JP		ERROR_REMOTE
+			LD		A,TN
+			HSUBIA	D'7';12				; <1ms?
+			SZB		C
+			JP		YK_BIT1
+			LD		A,TN				; >.2ms?
+			HSUBIA	D'2'
+			SNZB	C
+			JP		ERROR_REMOTE
+YK_BIT0:
+  	        CLRB	CODE0,0
+			JP		YK_BITJUD
+YK_BIT1:
+            SETB	CODE0,0
+YK_BITJUD:	
+			CLR		TN
+			INCR	REMOTE_NUM
+			LD		A,REMOTE_NUM
+			HSUBIA	D'68';64
+			SNZB	C
+			JP		END_REMOTE
+			SETB	F_REMOTE
+			LD		A,CODE0
+			LD		CODE1,A
+			JP		END_REMOTE
+ERROR_REMOTE:	
+			CLR		TN
+			CLR		CODE0
+			CLR		REMOTE_NUM
+END_REMOTE:
 ;--------------------------- SEND DATA ----------------------------;
 SEND_DATA:									
 		SNZB		F_SEND				;BIT_END中才清零
 		JP			SEND0               
-		SNZB		F_BIT_HEAD          ;BIT_END中才清零,发完头部会置一
-		JP			BIT_HEAD            
-		SZB			F_BIT_END           ;发完数据才置1,BIT_END中会清零
-		JP			BIT_END             
 		SZB			F_BIT1              ;发完数据包头部被置0
 		JP			SEND_BIT1           
 		SZB			F_BIT0              ;发完数据包头部被置0
@@ -296,34 +374,6 @@ SEND_DEAL:
 		SETB		OUT_DATA
 		SETB		F_BIT_END
 		JP			END_SEND_DATA
-BIT_HEAD:
-		INCR		PLUSE_TIME
-		NOP
-		LD			A,PLUSE_TIME
-		HSUBIA		D'32'				;4MS 高
-		SNZB		C
-		JP			SEND1
-		LD			A,PLUSE_TIME
-		HSUBIA		D'63'				;3.875MS 低
-		SNZB		C
-		JP			SEND0
-		CLR			PLUSE_TIME
-		SETB		F_BIT_HEAD
-		CLRB		F_BIT0
-		CLRB		F_BIT1
-		JP			END_SEND_DATA
-BIT_END:
-		INCR		PLUSE_TIME
-		NOP
-		LD			A,PLUSE_TIME
-		HSUBIA		D'5'				;0.625ms 高
-		SNZB		C
-		JP			SEND1
-		CLR			PLUSE_TIME
-		CLRB		F_BIT_END
-		CLRB		F_BIT_HEAD
-		CLRB		F_SEND
-		JP			SEND0
 SEND1:
 		SETB		OUT_DATA
 		JP			END_SEND_DATA
@@ -331,7 +381,7 @@ SEND0:
 		CLRB		OUT_DATA
 END_SEND_DATA:
 ;--------------------------- REC DATA -----------------------------;
-REMOTE_RECEIVE:
+REMOTE_RECEIVE1:
 		LD			A,TN1
 		HSUBIA		D'200'
 		SNZB		C
@@ -352,16 +402,16 @@ VALUE_JUD:
 		HSUBIA		D'16'
 		SZB			C
 		JP			ERROR_PLUSE
-		RLCR		CODE2
-		RLCR		CODE1
+		RLCR		CODE12
+		RLCR		CODE11
 		LD			A,TN1
 		HSUBIA		D'9'
 		SZB			C
 		JP			RECEIVE_BIT1
-		CLRB		CODE2,0
+		CLRB		CODE12,0
 		JP			BIT_COUNT
 RECEIVE_BIT1:
-		SETB		CODE2,0
+		SETB		CODE12,0
 BIT_COUNT:
 		INCR		REMOTE_NUM1
 		NOP
@@ -369,14 +419,14 @@ BIT_COUNT:
 		HSUBIA		D'16'
 		SNZB		C
 		JP			END_RECEIVE1
-ERROR_DETECTION:								;发送方差错检测:将CODE1与CODE2,7/6与运算,区高6位放入CODE2,5/4/3/2/1/0
-		CLR			CHECK_BUF2					;接收方将收到的CODE1与与CODE2,7/6与运算,判断结果是否与收到的检测位一致
-		LD			A,CODE2
+ERROR_DETECTION:								;发送方差错检测:将CODE11与CODE12,7/6与运算,区高6位放入CODE12,5/4/3/2/1/0
+		CLR			CHECK_BUF2					;接收方将收到的CODE11与与CODE12,7/6与运算,判断结果是否与收到的检测位一致
+		LD			A,CODE12
 		ANDIA		0C0H
-		LD			CHECK_BUF1,A				;将CODE2的最高两位赋值给CHECK_BUF1
-		LD			A,CODE1
-		XORR		CHECK_BUF1					;让CODE2的高两位与CODE1异或
-		SZB			CHECK_BUF1,7				;根据收到的数据,用CODE1与CODE2高两位异或,然后根据结果
+		LD			CHECK_BUF1,A				;将CODE12的最高两位赋值给CHECK_BUF1
+		LD			A,CODE11
+		XORR		CHECK_BUF1					;让CODE12的高两位与CODE11异或
+		SZB			CHECK_BUF1,7				;根据收到的数据,用CODE11与CODE12高两位异或,然后根据结果
 		SETB		CHECK_BUF2,5				;赋值给CHECK_BUF2的5/4/3/2/1/0,下一步要用这6位与收到的检测位作比较
 		SZB			CHECK_BUF1,6
 		SETB		CHECK_BUF2,4
@@ -388,7 +438,7 @@ ERROR_DETECTION:								;发送方差错检测:将CODE1与CODE2,7/6与运算,区
 		SETB		CHECK_BUF2,1
 		SZB			CHECK_BUF1,2
 		SETB		CHECK_BUF2,0
-		LD			A,CODE2
+		LD			A,CODE12
 		ANDIA		3FH							;取出6个检测位(CODE2.5/4/3/2/1/0)
 		LD			CHECK_BUF1,A				;放在CHECK_BUF1的5/4/3/2/1/0
 		LD			A,CHECK_BUF2				;让根据收到的数据算出来的校验码与收到的校验码做对比
@@ -396,9 +446,9 @@ ERROR_DETECTION:								;发送方差错检测:将CODE1与CODE2,7/6与运算,区
 		SNZB		Z
 		JP			ERROR_PLUSE					;不一致,跳转到错误处理
 END_DETECTION:		
-		LD			A,CODE1
-		LD			CODE1_BUF,A				;CODE1--T_ROOM_F
-		LD			A,CODE2
+		LD			A,CODE11
+		LD			CODE1_BUF,A				;CODE11--T_ROOM_F
+		LD			A,CODE12
 		LD			CODE2_BUF,A
 		SETB		F_RECEIVER_OK
 		JP			ERROR_PLUSE
@@ -416,12 +466,85 @@ PLUSE_DOWN:
 		JP			ERROR_PLUSE
 		JP			END_RECEIVE1
 ERROR_PLUSE:
-		CLR			CODE1
-		CLR			CODE2
+		CLR			CODE11
+		CLR			CODE12
 		CLR			REMOTE_NUM1
 END_RECEIVE1:
 		CLR			TN1
 END_RECEIVE:
+;------------------------------------------------------------------;
+DISP_LED:
+		SETB		LED_COM1
+		SETB		LED_COM2
+		SETB		LED_COM3
+		CLRB		LED_SEG1
+		CLRB		LED_SEG2
+		CLRB		LED_SEG3
+		CLRB		LED_SEG4
+		CLRB		LED_SEG5
+		CLRB		LED_SEG6
+		CLRB		LED_SEG7
+		
+		LD   		A,DISP_NUM
+		ADDR		PCL
+		JP			DISP_LED4
+		JP			DISP_LED1
+		JP			DISP_LED2
+		JP			DISP_LED3
+		JP			DISP_LED1
+		JP			DISP_LED2
+		JP			DISP_LED3
+		JP			DISP_LED4
+DISP_LED1:
+		SZB			LEDTR1,7
+		SETB		LED_SEG1
+		SZB			LEDTR1,6
+		SETB		LED_SEG2
+		SZB			LEDTR1,5
+		SETB		LED_SEG3
+		SZB			LEDTR1,4
+		SETB		LED_SEG4
+		SZB			LEDTR1,3
+		SETB		LED_SEG5
+		SZB			LEDTR1,2
+		SETB		LED_SEG6
+		SZB			LEDTR1,1
+		SETB		LED_SEG7
+		
+		CLRB		LED_COM1
+		JP      	DISP_LED4
+;------------------------------------------------------------------;
+DISP_LED2:
+		SZB			LEDTR2,7
+		SETB		LED_SEG1
+		SZB			LEDTR2,6
+		SETB		LED_SEG2
+		SZB			LEDTR2,5
+		SETB		LED_SEG3
+		SZB			LEDTR2,4
+		SETB		LED_SEG4
+		SZB			LEDTR2,3
+		SETB		LED_SEG5
+		SZB			LEDTR2,2
+		SETB		LED_SEG6
+		SZB			LEDTR2,1
+		SETB		LED_SEG7
+		
+		CLRB		LED_COM2
+		JP      	DISP_LED4
+;------------------------------------------------------------------;
+DISP_LED3:
+		SZB  		F_LED_AUTO
+		SETB		LED_SEG2
+		SZB			F_LED_TIMER
+		SETB		LED_SEG1
+		
+		SZB			F_LED_FAN2
+		SETB		LED_SEG7
+		SZB			F_LED_FAN1
+		SETB		LED_SEG6
+		CLRB		LED_COM3
+DISP_LED4:
 ;------------------------------------------------------------------;
 END_INT:
 		SWAPA		STATUS_BUF
@@ -539,37 +662,37 @@ T_05SEC:
 		SZB			C
 		CLRB		F_TEMP_SET
 T_05SEC1:
-		LD			A,T_SEC0
+		LD			A,T_SEC0			; 长按开机键4秒进入130F模式计时
 		HSUBIA		D'250'
 		SNZB		C
 		INCR		T_SEC0
 		
-		LD			A,T_HEAT_ON
+		LD			A,T_HEAT_ON			; 加热模块启动延时
 		HSUBIA		D'250'
 		SNZB		C
 		INCR		T_HEAT_ON
 		
-		LD			A,T_FAN_DELAY
+		LD			A,T_FAN_DELAY		; 风扇启动延时
 		HSUBIA		D'250'
 		SNZB		C
 		INCR		T_FAN_DELAY
 		
-		LD			A,T_SEND
+		LD			A,T_SEND			; 发送状态计时
 		HSUBIA		D'250'
 		SNZB		C
 		INCR		T_SEND
 		
-		LD			A,T_REC_TIMEOUT
+		LD			A,T_REC_TIMEOUT		; 接收A板信号计时
 		HSUBIA		D'250'
 		SNZB		C
 		INCR		T_REC_TIMEOUT
 		
-		LD			A,T_DOWN
+		LD			A,T_DOWN			; 倾倒计时
 		HSUBIA		D'250'
 		SNZB		C
 		INCR		T_DOWN
 		
-		SNZB		F_NODOWN
+		SNZB		F_NODOWN			; 倾倒后抬起计时
 		JP			T_05SEC2
 		LD			A,T_NODOWN
 		HSUBIA		D'250'
@@ -599,7 +722,7 @@ TIMER_JUD:
 		HSUBIA  	D'20'
 		SNZB  		C
 		JP      	END_TIMER_JUD
-		CLR     	T_MIN				;1H
+		CLR     	T_MIN				; 1H
 		LD   		A,T_HOUR
 		HSUBIA  	D'1'
 		SNZB  		C
@@ -627,7 +750,7 @@ END_T1:
 ;------------------------------------------------------------------;
 TIMER_SUB1:	
 		SNZB		F_RECEIVER_OK		; 超时无数据回传，断电
-		JP			BUZ_TIMER
+		JP			TIMER_SUB2
 		CLR			T_REC_TIMEOUT
 		CLRB		F_RECEIVER_OK
 		LD			A,CODE1_BUF
@@ -744,26 +867,16 @@ END_TIMER_SUB:
 ;******************************************************************;
 ;******************************************************************;			DISPLAY
 ;******************************************************************;
-DISPLAY:
-		SETB		LED_COM1
-		SETB		LED_COM2
-		SETB		LED_COM3
-		CLRB		LED_SEG1
-		CLRB		LED_SEG2
-		CLRB		LED_SEG3
-		CLRB		LED_SEG4
-		CLRB		LED_SEG5
-		CLRB		LED_SEG6
-		CLRB		LED_SEG7
+DISPLAY:		
 		INCR		DISP_NUM
-		NOP
 		LD			A,DISP_NUM
-		HSUBIA		D'7'
+		HSUBIA		D'5'
 		SNZB		C
-		JP			DISP_LED
+		JP			END_DISPLAY
 		CLR			DISP_NUM
 		CLR     	LEDTR1
 		CLR     	LEDTR2
+		CLR			LEDTR3
 ;------------------------------------------------------------------;
 DISP_DATA:
 		SZB			F_NOPOWER
@@ -795,32 +908,32 @@ FAN_DISP:
 		JP			DISP_F_HIGH
 		JP			DISP_F_MID
 		JP			DISP_F_LOW
-		JP			END_DISP_DATA
+		JP			DISP_DATA4
 DISP_F_SLOW:
 		LDIA		060H
-		LD			LEDTR2,A			;"1"
-		JP			END_DISP_DATA
+		LD			LEDTR2,A			; 数码屏显示"F1"
+		JP			DISP_DATA4
 DISP_F_HIGH:
 		LDIA		066H				
-		LD			LEDTR2,A			;"4"
-		JP			END_DISP_DATA
+		LD			LEDTR2,A			; 数码屏显示"F4"
+		JP			DISP_DATA4
 DISP_F_MID:
 		LDIA		0F2H
-		LD			LEDTR2,A			;"3"
-		JP			END_DISP_DATA
+		LD			LEDTR2,A			; 数码屏显示"F3"
+		JP			DISP_DATA4
 DISP_F_LOW:
 		LDIA		0DAH
-		LD			LEDTR2,A			;"2"
-		JP			END_DISP_DATA		
+		LD			LEDTR2,A			; 数码屏显示"F2"
+		JP			DISP_DATA4		
 ;------------------------------------------------------------------;
 HEAT_DISP:
 		SZB			F_TEMP_SET
-		JP			DISP_DATA2
+		JP			DISP_DATA2			; 温度设置时跳转到显示设置温度
 		SZB			F_TIMER_SET
-		JP			DISP_DATA3		
-DISP_DATA10:						;室温显示
-		SNZB		F_AUTO
-		JP			DISP_DATA11
+		JP			DISP_DATA3			; 时间设置时跳转到显示设置时间
+		SNZB		F_AUTO			; 判断是否是自动控温模式
+		JP			DISP_DATA11		; 风速模式直接进入档位显示
+DISP_DATA10:						; 室温显示(既没有设置温度也没有设置时间,数码管显示室温)
 		LD   		A,T_ROOM_DISP
 		LD   		LED_BUF2,A
 		CALL    	CALL_TABLE
@@ -828,39 +941,46 @@ DISP_DATA10:						;室温显示
 		LD   		LEDTR1,A
 		LD  		A,LED_BUF2
 		LD   		LEDTR2,A
-		JP			END_DISP_DATA
+		JP			DISP_DATA4
 DISP_DATA11:						;档位显示
-		NOP
-		NOP
-		NOP
 		LDIA		02EH			
 		LD			LEDTR1,A		;"H"
 		LD			A,HEAT_SETUP
-		ADDR		PCL
+		XORIA		00H
+		SZB			Z
 		JP			DISP_H_HIG
+		LD			A,HEAT_SETUP
+		XORIA		01H
+		SZB			Z
 		JP			DISP_H_MID
+		LD			A,HEAT_SETUP
+		XORIA		02H
+		SZB			Z
 		JP			DISP_H_LOW
+		LD			A,HEAT_SETUP
+		XORIA		03H
+		SZB			Z
 		JP			DISP_H_HF
-		JP			END_DISP_DATA
+		JP			DISP_DATA4
 DISP_H_HIG:
 		LDIA		0F2H			;"3"
 		LD			LEDTR2,A
-		JP			END_DISP_DATA
+		JP			DISP_DATA4
 DISP_H_MID:
 		LDIA		0DAH			;"2"
 		LD			LEDTR2,A
-		JP			END_DISP_DATA
+		JP			DISP_DATA4
 DISP_H_LOW:
 		LDIA		060H			;"1"
 		LD			LEDTR2,A
-		JP			END_DISP_DATA
+		JP			DISP_DATA4
 DISP_H_HF:
 		LDIA		08EH			;"F"
 		LD			LEDTR2,A
-		JP			END_DISP_DATA		
-DISP_DATA2:							;温度设置显示
+		JP			DISP_DATA4		
+DISP_DATA2:							; 温度设置显示
 		SZB  		LIGHON,1
-		JP      	END_DISP_DATA
+		JP      	DISP_DATA4
 		SZB   		F_TEMP_MODE
 		JP      	DISP_DATA22
 DISP_DATA21:							; F
@@ -871,7 +991,7 @@ DISP_DATA21:							; F
 		LD   		LEDTR1,A
 		LD   		A,LED_BUF2
 		LD   		LEDTR2,A
-		JP      	END_DISP_DATA
+		JP      	DISP_DATA4
 DISP_DATA22:							; C
 		LD  		A,T_SETUP_C
 		LD   		LED_BUF2,A
@@ -880,10 +1000,10 @@ DISP_DATA22:							; C
 		LD   		LEDTR1,A
 		LD   		A,LED_BUF2
 		LD   		LEDTR2,A
-		JP      	END_DISP_DATA
-DISP_DATA3:								;时间设置显示
+		JP      	DISP_DATA4
+DISP_DATA3:								; 时间设置显示
 		SZB  		LIGHON,1
-		JP      	END_DISP_DATA  
+		JP      	DISP_DATA4  
 		LD   		A,T_HOUR
 		LD   		LED_BUF2,A
 		CALL    	CALL_TABLE
@@ -891,71 +1011,22 @@ DISP_DATA3:								;时间设置显示
 		LD   		LEDTR1,A
 		LDIA    	2EH
 		LD   		LEDTR2,A
-END_DISP_DATA:
-		JP			END_DISPLAY
-;------------------------------------------------------------------;
-DISP_LED:
-		LD   		A,DISP_NUM
-		ADDR		PCL
-		JP			END_DISPLAY
-		JP      	DISP_LED1
-		JP      	DISP_LED2
-		JP      	DISP_LED3
-		JP			DISP_LED1
-		JP			DISP_LED2
-		JP			DISP_LED3
-DISP_LED1:
-		SZB			LEDTR1,7
-		SETB		LED_SEG1
-		SZB			LEDTR1,6
-		SETB		LED_SEG2
-		SZB			LEDTR1,5
-		SETB		LED_SEG3
-		SZB			LEDTR1,4
-		SETB		LED_SEG4
-		SZB			LEDTR1,3
-		SETB		LED_SEG5
-		SZB			LEDTR1,2
-		SETB		LED_SEG6
-		SZB			LEDTR1,1
-		SETB		LED_SEG7
-		
-		CLRB		LED_COM1
-		JP      	END_DISPLAY
-;------------------------------------------------------------------;
-DISP_LED2:
-		SZB			LEDTR2,7
-		SETB		LED_SEG1
-		SZB			LEDTR2,6
-		SETB		LED_SEG2
-		SZB			LEDTR2,5
-		SETB		LED_SEG3
-		SZB			LEDTR2,4
-		SETB		LED_SEG4
-		SZB			LEDTR2,3
-		SETB		LED_SEG5
-		SZB			LEDTR2,2
-		SETB		LED_SEG6
-		SZB			LEDTR2,1
-		SETB		LED_SEG7
-		
-		CLRB		LED_COM2
-		JP      	END_DISPLAY
-;------------------------------------------------------------------;
-DISP_LED3:
-		SZB  		F_AUTO				;AUTO
-		SETB		LED_SEG2
+DISP_DATA4:
+		SZB  		F_AUTO				; AUTO
+		SETB		F_LED_AUTO
+DISP_DATA5:
+        LD			A,T_HOUR
+        HSUBIA		D'1'
+        SZB			C
+		SETB		F_LED_TIMER
+DISP_DATA6:
 		SNZB		F_FAN_ONOFF
-		JP			DISP_LED4
-		SETB		LED_SEG6
-		SETB		LED_SEG7
-DISP_LED4:								;TIMER
-		LD			A,T_HOUR
-		HSUBIA		D'1'
-		SZB			C
-		SETB		LED_SEG1
-DISP_LED5:
-		CLRB		LED_COM3		
+		JP			END_DISP_DATA
+		SETB		F_LED_FAN1
+		SETB		F_LED_FAN2
+;------------------------------------------------------------------;
+END_DISP_DATA:
+;------------------------------------------------------------------;
 END_DISPLAY:
 		RET
 ;******************************************************************;
@@ -970,7 +1041,7 @@ SCANKEY:
 ;------------------------------------------------------------------;
 		CLR			KEY_VALUE
 		LD			A,KEY_RAM1
-		HSUBIA		D'238'
+		HSUBIA		D'213'
 		SZB			C
 		JP			SCANKEY_4
 		LD			A,KEY_RAM1
@@ -981,12 +1052,20 @@ SCANKEY:
 		JP			SCANKEY_4
 SCANKEY_1:
 		LD			A,KEY_RAM1
+		HSUBIA		D'149'
+		SZB			C
+		JP			SCANKEY_4
+		LD			A,KEY_RAM1
 		HSUBIA		D'115'
 		SNZB		C
 		JP			SCANKEY_2
 		SETB		KEY_VALUE,1		;TEMP-
 		JP			SCANKEY_4
 SCANKEY_2:
+		LD			A,KEY_RAM1
+		HSUBIA		D'59'
+		SZB			C
+		JP			SCANKEY_4
 		LD			A,KEY_RAM1
 		HSUBIA		D'25'
 		SNZB		C
@@ -999,7 +1078,7 @@ SCANKEY_4:
 ;------------------------------------------------------------------;
 SCANKEY_5:
 		LD			A,KEY_RAM2
-		HSUBIA		D'238'
+		HSUBIA		D'213'
 		SZB			C
 		JP			SCANKEY_9
 		LD			A,KEY_RAM2
@@ -1010,12 +1089,20 @@ SCANKEY_5:
 		JP			SCANKEY_9
 SCANKEY_6:
 		LD			A,KEY_RAM2
+		HSUBIA		D'149'
+		SZB			C
+		JP			SCANKEY_9
+		LD			A,KEY_RAM2
 		HSUBIA		D'115'
 		SNZB		C
 		JP			SCANKEY_7
 		SETB		KEY_VALUE,5		;TEMP+
 		JP			SCANKEY_9
 SCANKEY_7:
+		LD			A,KEY_RAM2
+		HSUBIA		D'59'
+		SZB			C
+		JP			SCANKEY_9
 		LD			A,KEY_RAM2
 		HSUBIA		D'25'
 		SNZB		C
@@ -1104,10 +1191,10 @@ ON_KEY:
 		
 		JP			END_SCANKEY
 OLDKEY:
-		;SZB			F_HEAT_ONOFF
-		;JP			OLDKEY1
-		;SZB			F_FAN_ONOFF
-		;JP			FAN_OLDKEY
+		SZB			F_HEAT_ONOFF
+		JP			OLDKEY1
+		SZB			F_FAN_ONOFF
+		JP			FAN_OLDKEY
 		JP			END_OLDKEY
 OLDKEY1:		
 		LD			A,KEY_TIMER
@@ -1134,6 +1221,7 @@ OLDKEY1:
 		XORIA		01H
 		SZB			Z
 		JP			KEY_F_TIME
+		JP			END_OLDKEY
 FAN_OLDKEY:
 		LD			A,KEY_TIMER
 		HSUBIA		D'250'
@@ -1247,7 +1335,6 @@ KEY_SPEED0:
 KEY_UP:												;TEMP +
 		SNZB		F_HEAT_ONOFF
 		JP			END_SCANKEY
-		SZB			HEAT_SETUP,0
 		CLR			HEAT_SETUP
 		SETB		F_AUTO
 		SZB			F_TEMP_SET
@@ -1265,13 +1352,6 @@ KEY21:
 		SZB			C
 		JP			ENDK2_0
 		INCR		T_SETUP_F
-		LD  		A,T_SETUP_F
-		LD   		LED_BUF2,A
-		CALL    	CALL_TABLE
-		LD   		A,LED_BUF1
-		LD   		LEDTR1,A
-		LD   		A,LED_BUF2
-		LD   		LEDTR2,A
 		JP			ENDK2
 KEY22:
 		LD			A,T_SETUP_C
@@ -1279,13 +1359,6 @@ KEY22:
 		SZB			C
 		JP			ENDK2_0
 		INCR		T_SETUP_C
-		LD  		A,T_SETUP_C
-		LD   		LED_BUF2,A
-		CALL    	CALL_TABLE
-		LD   		A,LED_BUF1
-		LD   		LEDTR1,A
-		LD   		A,LED_BUF2
-		LD   		LEDTR2,A
 		JP			ENDK2
 ;------------------------------------------------------------------;
 ENDK2_0:
@@ -1337,9 +1410,9 @@ KEY_DOWN:											;TEMP -
 		SETB		F_AUTO
 		SZB			F_TEMP_SET	
 		JP			KEY31	
-		SETB		F_TEMP_SET	
-		CLRB		F_TIMER_SET
+		SETB		F_TEMP_SET
 		SETB		F_TEMP_FIRST
+		CLRB		F_TIMER_SET
 		JP			ENDK3
 KEY31:
 		SZB			F_TEMP_MODE
@@ -1349,13 +1422,6 @@ KEY31:
 		SNZB		C
 		JP			ENDK3_0
 		DECR		T_SETUP_F
-		LD  		A,T_SETUP_F
-		LD   		LED_BUF2,A
-		CALL    	CALL_TABLE
-		LD   		A,LED_BUF1
-		LD   		LEDTR1,A
-		LD   		A,LED_BUF2
-		LD   		LEDTR2,A
 		JP			ENDK3
 KEY32:
 		LD			A,T_SETUP_C
@@ -1363,13 +1429,6 @@ KEY32:
 		SNZB		C
 		JP			ENDK3_0
 		DECR		T_SETUP_C
-		LD  		A,T_SETUP_C
-		LD   		LED_BUF2,A
-		CALL    	CALL_TABLE
-		LD   		A,LED_BUF1
-		LD   		LEDTR1,A
-		LD   		A,LED_BUF2
-		LD   		LEDTR2,A
 		JP			ENDK3
 ;------------------------------------------------------------------;
 ENDK3_0:
