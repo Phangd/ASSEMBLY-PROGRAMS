@@ -73,36 +73,37 @@
 		DATA1           EQU	3CH
 		PLUSE_TIME		EQU	3DH
 		BIT_NUM         EQU	3EH
-		TN              EQU	40H
-		REMOTE_NUM      EQU	42H
-		T100MS_TIMER    EQU	43H
-		T_SEND          EQU	44H
-		T_FAN_DELAY     EQU	45H
-		T_REC_TIMEOUT   EQU	46H
-		T_ZERO          EQU	47H
-		T_NPULSE_BUF    EQU	48H
-		T_NPULSE        EQU	49H
-		T_ADC_DELAY     EQU	4AH
-		OVER_CNT1       EQU	4BH
-		DISP_NUM        EQU	4CH
-		LOSE_TIME1      EQU	4DH
-		LOSE_TIME2      EQU	4EH
-		LOSE_TIME3      EQU	50H
-		T_ROOM_REAL     EQU	51H
-		T_ROOM_BUF      EQU	52H
-		T_ROOM_F        EQU	53H
-		NTC_RAM			EQU	54H
-		NTC_RAM1		EQU	55H
-		NTC_RAM2		EQU	56H
-		ADC_NUM			EQU	57H
-		ZERO_CNT		EQU	58H
-		CHECK_BUF		EQU	59H			;RECEIVE CHECK BUF
-		CHECK_BUF1		EQU	5AH			;RECEIVE CHECK BUF1
-		CHECK_BUF2		EQU	5BH			;SEND CHECK BUF
-		FLAG5			EQU	5CH
-		DATA_BUF		EQU	5DH
-		DATA1_BUF		EQU	5EH
-;******************************************************************;
+		TN              EQU	3FH
+		REMOTE_NUM      EQU	40H
+		T100MS_TIMER    EQU	42H
+		T_SEND          EQU	43H
+		T_FAN_DELAY     EQU	44H
+		T_REC_TIMEOUT   EQU	45H
+		T_ZERO          EQU	46H
+		T_NPULSE_BUF    EQU	47H
+		T_NPULSE        EQU	48H
+		T_ADC_DELAY     EQU	49H
+		OVER_CNT1       EQU	4AH
+		DISP_NUM        EQU	4BH
+		LOSE_TIME1      EQU	4CH
+		LOSE_TIME2      EQU	4DH
+		LOSE_TIME3      EQU	4EH
+		T_ROOM_REAL     EQU	4FH
+		T_ROOM_BUF      EQU	50H
+		T_ROOM_F        EQU	51H
+		NTC_RAM			EQU	52H
+		NTC_RAM1		EQU	53H
+		NTC_RAM2		EQU	54H
+		ADC_NUM			EQU	55H
+		ZERO_CNT		EQU	56H
+		CHECK_BUF		EQU	57H
+		CHECK_BUF1		EQU	58H
+		CHECK_BUF2		EQU	59H			;RECEIVE CHECK BUF
+		FLAG5			EQU	5AH			;RECEIVE CHECK BUF1
+		DATA_BUF		EQU	5BH			;SEND CHECK BUF
+		DATA1_BUF		EQU	5CH
+		PULSE_CNT		EQU	5DH
+;*************************************************************************;
 		F_T1MS			EQU	T1MS_TIMER,3
 		
 		;FLAG1(RECEIVE)
@@ -355,6 +356,7 @@ ZERO_PLUSE:									;过零信号
 		JP			NPLUSE
 PPLUSE:	
 		INCR		T_NPULSE_BUF
+		NOP
 		SZB			F_ZERO_RISE
 		JP			END_ZERO_PULSE
 		SETB		F_ZERO_RISE				; 上升沿
@@ -374,8 +376,8 @@ ZERO_PRC:
 		LD			A,ZERO_CNT
 		HSUBIA		D'250'
 		SNZB		C
-		SZINCR		ZERO_CNT
-		NOP	
+		INCR		ZERO_CNT
+		NOP
 		SNZB		ZERO_FAN
 		JP			ZERO_NPULSE
 ZERO_PPULSE:									;正
@@ -386,6 +388,7 @@ ZERO_PPULSE:									;正
 		SNZB		C
 		JP			END_ZERO_PRC
 		SETB		F_ZERO_UP
+		INCR		PULSE_CNT
 		CLR			ZERO_CNT
 		JP			END_ZERO_PRC
 ZERO_NPULSE:									;负
@@ -396,8 +399,10 @@ ZERO_NPULSE:									;负
 		SNZB		C
 		JP			END_ZERO_PRC
 		CLRB		F_ZERO_UP
+		INCR		PULSE_CNT
 		CLR			ZERO_CNT
 END_ZERO_PRC:
+		
 ;------------------------------------------------------------------;
 TRACE_PRC:											;可控硅驱动
 		SZB			F_FAN_HIG
@@ -496,7 +501,7 @@ RESET:
 		LD			P1CL,A
 		LDIA		B'00110010'				;P1.6 NTC	P1.5/4 OUT_OSC/HEAT_LOW
 		LD			P1CH,A
-		LDIA		B'10001001'				;P2.2 OUT_FAN_H	P2.1 FAN_ZERO P2.0 HEAT_ZERO
+		LDIA		B'10001001'				;P2.2 OUT_FAN_H	P2.1 FAN_ZERO P2.0 VOLT_ZERO
 		LD			P2C,A
 		
 		LDIA		B'11111111'
@@ -535,7 +540,7 @@ INIT_RAM:
 		LD			OVER_CNT1,A
 		LDIA		D'250'
 		LD			T_ADC_DELAY,A
-		;SETB		F_POWER_LOW
+		SETB		F_POWER_LOW
 ;******************************************************************;
 ;******************************************************************;
 ;******************************************************************;
@@ -563,7 +568,7 @@ TIMER_SUB:
 		JP			T1
 		CLR			DISP_NUM
 ;------------------------------------------------------------------;
-ZERO_JUD:								; 8ms
+ZERO_JUD:								; 3ms进入一次
 		LD			A,T_ZERO
 		HSUBIA		D'250'
 		SZB			C
@@ -571,16 +576,17 @@ ZERO_JUD:								; 8ms
 		LD			A,T_NPULSE
 		HSUBIA		D'95'				; VOLT<85V?
 		SNZB		C
-		JP    		ZERO_JUD2
+		JP    		ZERO_JUD2			; 大于85V,正常工作
+		JP			ZERO_JUD3			; 小于85V,跳转到低压计时
 ZERO_JUD1:	
 		CLR     	LOSE_TIME2
 		CLR			LOSE_TIME3
-		INCR   		LOSE_TIME1
+		INCR   		LOSE_TIME1			; 超时无过零信号计时
 		NOP	
 		LD   		A,LOSE_TIME1
 		HSUBIA  	D'60';'125'
 		SZB  		C
-		;SETB		F_POWER_LOW
+		SETB		F_POWER_LOW
 		JP      	END_ZERO_JUD
 ZERO_JUD3:	
 		CLR			LOSE_TIME1
