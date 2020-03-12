@@ -40,105 +40,111 @@
 		TABLE_SPH		EQU	22H
 		TABLE_SPL		EQU	23H
 		TABLE_DATAH		EQU	24H
+		T_ZERO			EQU	25H
+		T_NPULSE        EQU	26H
+		T_NPULSE_BUF    EQU	27H
+		LOSE_TIME1      EQU	28H
+		LOSE_TIME2      EQU	29H
+		LOSE_TIME3      EQU	2AH
 ;******************************************************************;
-		OUT_BUZ			EQU	P2,2
-		OUT_LOW			EQU	P0,1
-		OUT_HIG			EQU	P0,0
+		OUT_LOW			EQU	P0,0
+		OUT_HIG			EQU	P0,1
 		OUT_OSC			EQU	P1,4
 		OUT_FAN			EQU	P1,5
+		OUT_BUZ			EQU	P2,2
 		
-		LED_COM1		EQU	P0,3
-		LED_COM2		EQU	P0,7
-		LED_SEG1		EQU	P0,6
-		LED_SEG2		EQU	P0,5
-		LED_SEG3		EQU	P0,4
-		LED_SEG4		EQU	P1,6
-		LED_SEG5		EQU	P1,2
-		LED_SEG6		EQU	P1,1
-		LED_SEG7		EQU	P1,0
+		SW_POWER		EQU	P1,1
+		SW_TIMER		EQU	P1,2
+		SW_TEMP			EQU	P1,0
+		SW_OSC			EQU	P0,3
 		
-		SW_OSC			EQU	P2,0
-		
+		ZERO_VOLT		EQU	P0,2
 		NTC				EQU	P1,3
-		ZERO_IN			EQU	P0,2
-;******************************************************************;		
+		OUT_SDA			EQU	P0,6
+		OUT_SCL			EQU	P0,7
+;******************************************************************;
 		ACC_BUF			EQU	30H
-		STATUS_BUF		EQU	31H
-		FLAG1			EQU	32H
-		FLAG2			EQU	33H
-		T1MS_TIMER      EQU	34H
-		T100MS_TIMER	EQU	35H
-		T250MS_TIMER    EQU	36H
-		T250MS_TIMER1   EQU	37H
-		T_ZERO          EQU	38H
-		T_NPULSE_BUF    EQU 39H
-		KEY_VALUE       EQU 3AH
-		KEY_VALUE1      EQU 3BH
-		LEDN            EQU 3CH
-		LIGHON          EQU 3DH
-		DISP_NUM        EQU 3EH
-		T_NPULSE        EQU 3FH
-		T_SETUP_F		EQU 41H
-		T_SETUP_LOW     EQU 42H
-		T_SETUP_MAX     EQU 43H
-		OVER_CN1        EQU 44H
-		T_ADC_DELAY     EQU 45H    
-		KEY_DELAY       EQU 46H
-		KEY_DELAY1      EQU 47H
-		OLDKEY_TIMER    EQU 48H
-		T_BUZ           EQU 49H
-		T_HOUR          EQU 4AH
-		T_MIN           EQU 4BH
-		T_SEC           EQU 4CH
-		T_SEC0          EQU 4DH
-		T_HEAT_ON       EQU 4EH
-		T_FAN_DELAY     EQU 4FH
-		T_TEMP_HOLD     EQU 51H
-		T_TEMP_HOLD0    EQU 52H
-		HEAT_WORK       EQU 53H
-		HEAT_WORK_BUF	EQU 54H
-		HEAT_SETUP      EQU	55H
-		TEMP_SETUP      EQU	56H
-		TEMP_WORK		EQU	57H
-		NTC_RAM         EQU	58H
-		NTC_RAM1        EQU	59H
-		NTC_RAM2        EQU	5AH
-		ADC_NUM         EQU	5BH
-		T_ROOM_BUF      EQU	5CH
-		T_ROOM_F        EQU	5DH
-		T_ROOM_REAL     EQU	5EH
-		T_ROOM_DISP     EQU	5FH
-		OVER_CNT1       EQU	61H
-		OVER_CNT2	    EQU	62H
-;*************************************************************************;		
+		STATUS_BUF      EQU	31H
+		T1MS_TIMER      EQU	32H
+		LEDTR1			EQU	33H
+		LEDTR2			EQU	34H
+		FLAG1			EQU	35H
+		FLAG2           EQU	36H
+		FLAG3           EQU	37H
+		FLAG4           EQU 38H
+		DISP_NUM        EQU	39H
+		T100MS_TIMER    EQU	3AH
+		T250MS_TIMER    EQU	3BH
+		T_HOUR          EQU	3CH
+		T_MIN           EQU	3DH
+		T_SEC           EQU	3EH
+		T_SEC0          EQU	3FH
+		T_HEAT_ON       EQU	40H
+		T_FAN_DELAY     EQU	41H
+		T_TEMP_HOLD		EQU	42H
+		T_TEMP_HOLD0    EQU	43H
+		LIGHON          EQU	44H
+		KEY_VALUE       EQU	45H
+		KEY_VALUE1      EQU	46H
+		KEY_DELAY       EQU	47H
+		T_OLDKEY        EQU	48H
+		HEAT_WORK       EQU	49H
+		HEAT_WORK_BUF	EQU	4AH
+		HEAT_SETUP      EQU	4BH
+		TEMP_SETUP      EQU	4CH
+		T_BUZ			EQU	4DH
+		DSP_BUF         EQU	4EH
+		BITNUM          EQU	4FH
+		WAIT_TIME1      EQU	50H
+		NTC_RAM         EQU	51H
+		NTC_RAM1		EQU	52H
+		NTC_RAM2        EQU	53H
+		ADC_NUM         EQU	54H
+		T_ROOM_BUF      EQU	55H
+		T_ROOM_F        EQU	56H
+		OVER_CNT1       EQU	57H
+		OVER_CNT2       EQU	58H
+		T_SETUP_LOW     EQU	59H
+		T_SETUP_MAX     EQU	5AH
+		T_ROOM_REAL		EQU	5BH
+;******************************************************************;		
 		F_T1MS			EQU	T1MS_TIMER,3
 		;FLAG1
-		F_ONOFF			EQU	FLAG1,0
-		F_OSC			EQU	FLAG1,1
-		F_BUZ			EQU	FLAG1,2
-		F_PROTECT		EQU	FLAG1,3
-		F_ONKEY			EQU	FLAG1,4
+		F_BUZ			EQU	FLAG1,0
+		F_PROTECT       EQU	FLAG1,1
+		F_TEMP_130F     EQU	FLAG1,2
+		F_ADC_FIRST     EQU	FLAG1,3
+		F_POWER_LOW     EQU	FLAG1,4
+		F_NOPOWER		EQU	FLAG1,5
+		F_TEMP_FIRST    EQU	FLAG1,6
+		F_TEMP_HOLD     EQU	FLAG1,7
 		
-		F_TEMP_HOLD		EQU	FLAG2,0
-		F_ZERO_RISE		EQU	FLAG2,1
-		F_ADC_FIRST		EQU FLAG2,2
-		F_TEMP_130F		EQU	FLAG2,3
+		
+		F_ONKEY			EQU	FLAG2,0
+		F_OSC           EQU	FLAG2,1
+		F_ONOFF			EQU	FLAG2,2
+		F_AUTO			EQU	FLAG2,3
+		
+		;FLAG3
+		F_ZERO_RISE		EQU	FLAG3,0
 ;******************************************************************;
-		ORG			0000H
+;******************************************************************;
+		ORG			00H
 		JP			RESET
-		ORG			0001H
-		JP			ISR_TIMER0
+		ORG			01H
+		JP			INT_TIMER0
 ;******************************************************************;
-ISR_TIMER0:
+;******************************************************************;
+INT_TIMER0:
 		LD			ACC_BUF,A
 		SWAPR		ACC_BUF
 		SWAPA		FLAGS
 		LD			STATUS_BUF,A
 		CLRB		INT_FLAG,F_T1
-;---------------------------- BUZZER ------------------------------;		
+;---------------------------- BUZZER ------------------------------;
 		SNZB		F_BUZ
 		JP			BUZZ_OFF
-BUZZ_ON:
+BUZZER:
 		LDIA		04H
 		XORR		P2
 		JP			END_BUZZ
@@ -146,24 +152,32 @@ BUZZ_OFF:
 		CLRB		OUT_BUZ
 END_BUZZ:
 ;--------------------------- 1MS TIMER ----------------------------;
-TIMER1:	
+TIMER0:
 		INCR		T1MS_TIMER
-END_TIMER1:
-;-----------------------------  ZERO  -----------------------------;
+END_TIMER0:
+;---------------------------- REMOTE ------------------------------;
+
+
+
+
+
+;---------------------------- VOLT ZERO ---------------------------;
 ZERO_PLUSE:									;过零信号
 		LD			A,T_ZERO
 		HSUBIA		D'253'
 		SNZB		C
 		INCR		T_ZERO
-		SNZB		ZERO_IN
+		SNZB		ZERO_VOLT
 		JP			NPLUSE
-PPLUSE:		
+PPLUSE:	
 		INCR		T_NPULSE_BUF
+		NOP
 		SZB			F_ZERO_RISE
 		JP			END_ZERO_PULSE
 		SETB		F_ZERO_RISE				; 上升沿
 		JP			END_ZERO_PULSE
-NPLUSE:	
+;------------------------------------------------------------------;
+NPLUSE:		
 		SNZB		F_ZERO_RISE
 		JP			END_ZERO_PULSE
 		CLRB		F_ZERO_RISE
@@ -171,47 +185,48 @@ NPLUSE:
 		LD			T_NPULSE,A
 		CLR			T_NPULSE_BUF			;下降沿处理
 		CLR			T_ZERO
-END_ZERO_PULSE:	
+END_ZERO_PULSE:
 ;------------------------------------------------------------------;
-EXIT_INT:
-		SWAPA		STATUS_BUF	            ; 现场恢复
+END_INT:
+		SWAPA		STATUS_BUF
 		LD			FLAGS,A
 		SWAPA		ACC_BUF
 		RETI
 ;******************************************************************;
+;******************************************************************;
 RESET:
 		CLRWDT
 		CLR			SYS_GEN
-		LDIA		B'10001011'
+		LDIA		B'00001011'
 		LD			P0,A
-		LDIA		B'00110000'
+		LDIA		B'00110111'
 		LD			P1,A
-		LDIA		B'00000001'
+		LDIA		B'00000000'
 		LD			P2,A
 		
-		LDIA		B'10011010'
+		LDIA		B'00011010'				;P0,3--SW_OSC	P0,2--ZERO_IN	P0,1/0--OUT_HIG/LOW
 		LD			P0CL,A
-		LDIA		B'10101010'
+		LDIA		B'10100101'				;P0,7/6--OUT_SCL/SDA	P0,5/4--NONE
 		LD			P0CH,A
-		LDIA		B'01101010'
+		LDIA		B'01000000'				;P1,3--NTC	P1,2/1/0--SW_TIMER/POWER/TEMP
 		LD			P1CL,A
-		LDIA		B'10010010'
+		LDIA		B'00110010'				;P1,6--NONE	P1,5/4--OUT_OSC/FAN
 		LD			P1CH,A
-		LDIA		B'10000000'
+		LDIA		B'10010010'				;P2,2--BUZZ
 		LD			P2C,A
 		
-		LDIA		B'10001011'
+		LDIA		B'00001011'
 		LD			P0,A
-		LDIA		B'00110000'
+		LDIA		B'00110111'
 		LD			P1,A
-		LDIA		B'00000001'
+		LDIA		B'00000000'
 		LD			P2,A
 		
 		CLRA
 		OPTION
 		CLRB		TMR1C,TON
 		CLRB		INT_EN,EN_T1
-		CLRB		INT_FLAG,F_T1		        ;内部8M晶振。
+		CLRB		INT_FLAG,F_T1
 		LDIA		B'10000001'		        	;TMR1初值=256-（TMR0的中断间隔时间*TMR0的输入时钟）
 		LD			TMR1C,A	                    ;    =256-(125us*8M/4/2)
 		LDIA		83H		                	;	 =256-125
@@ -219,51 +234,183 @@ RESET:
 		CLRB		INT_FLAG,F_T1		
 CLR_RAM:
 		LDIA		2FH
-		LD			MP,A
+		LD			MP,A		
 CLR_LOOP:
 		INCR		MP
 		CLR			IAR
 		LDIA		07FH
 		SUBA		MP
 		SNZB		C
-		JP			CLR_LOOP
+		JP			CLR_LOOP		
 INIT_RAM:
 		SETB		INT_EN,EN_T1
 		SETB		SYS_GEN,INT_GEN
 		SETB		TMR1C,TON
-
-		LDIA		D'100'
-		LD			T_SETUP_F,A
-		LD			T_SETUP_LOW,A
-		LD			T_SETUP_MAX,A
-		LDIA		D'2'
-		ADDR		T_SETUP_MAX
-		
-		LDIA		D'30'
-		LD			OVER_CN1,A
-		LDIA		D'250'
-		LD			T_ADC_DELAY,A
+		SETB		F_POWER_LOW
 		CLRB		F_PROTECT
-		LDIA		D'3'
-		LD			TEMP_SETUP,A
+		SETB		F_BUZ
+		CLR			T_BUZ
 ;******************************************************************;
 ;******************************************************************;
 ;******************************************************************;
 ;******************************************************************;
-;******************************************************************;
+;******************************************************************;		
 MAINLOOP:
-		CALL		ADC_GET				
-		CLRWDT
+		CALL		ADC_GET
 		SNZB		F_T1MS
 		JP			MAINLOOP
 		CLRB		F_T1MS
 		CLRWDT
-		CALL		TIMER_SUB			;2
-		CALL		SENSOR_SUB			;1
-		CALL		SCANKEY				;3
-		CALL		DISPLAY				;4
-		CALL		WORK_SUB			;5
+		CALL		TIMER_SUB			;0
+		CALL		SENSOR_SUB			;3
+		CALL		SCANKEY				;1
+		CALL		DISPLAY				;2
+		CALL		WORK_SUB			;4
 		JP			MAINLOOP
+;******************************************************************;
+;******************************************************************;
+;******************************************************************;
+;******************************************************************;
+;******************************************************************;
+TIMER_SUB:
+		INCR		DISP_NUM
+		NOP
+		LD			A,DISP_NUM
+		HSUBIA		D'5'
+		SNZB		C
+		JP			TIMER_SUB0
+		CLR			DISP_NUM
+ZERO_JUD:								; 3ms进入一次
+		LD			A,T_ZERO
+		HSUBIA		D'250'
+		SZB			C
+		JP			ZERO_JUD1;3			; OVER 32ms NO ZERO PULSE
+		LD			A,T_NPULSE
+		HSUBIA		D'95'				; VOLT<85V?
+		SNZB		C
+		JP    		ZERO_JUD2			; 大于85V,正常工作
+		JP			ZERO_JUD3			; 小于85V,跳转到低压计时
+ZERO_JUD1:	
+		CLR     	LOSE_TIME2
+		CLR			LOSE_TIME3
+		INCR   		LOSE_TIME1			; 超时无过零信号计时
+		NOP	
+		LD   		A,LOSE_TIME1
+		HSUBIA  	D'60';'125'
+		SZB  		C
+		SETB		F_POWER_LOW
+		JP      	END_ZERO_JUD
+ZERO_JUD3:	
+		CLR			LOSE_TIME1
+		CLR			LOSE_TIME2
+		INCR		LOSE_TIME3
+		NOP	
+		LD			A,LOSE_TIME3
+		HSUBIA		D'5'
+		SNZB		C
+		JP			END_ZERO_JUD
+		SETB		F_NOPOWER
+		SETB  		OUT_HIG
+		SETB  		OUT_LOW
+		SETB		OUT_FAN
+		SETB		OUT_OSC
+		JP			END_ZERO_JUD
+ZERO_JUD2:	
+		CLR			LOSE_TIME1
+		CLR			LOSE_TIME3
+		INCR		LOSE_TIME2
+		NOP	
+		LD			A,LOSE_TIME2
+		HSUBIA		D'60'
+		SNZB		C
+		JP			END_ZERO_JUD
+		CLRB		F_NOPOWER
+		SNZB		F_POWER_LOW
+		JP			END_ZERO_JUD
+POWER_ON:									; 上电
+		CLRB		F_POWER_LOW
+END_ZERO_JUD:
+;------------------------------------------------------------------;		
+TIMER_SUB0:
+		INCR		T100MS_TIMER
+		NOP
+		LD			A,T100MS_TIMER
+		HSUBIA		D'100'
+		SNZB		C
+		JP			TIMER_SUB1
+T_05SEC:
+		CLR			T100MS_TIMER
+		LD			A,T_SEC0
+		HSUBIA		D'250'
+		SNZB		C
+		INCR		T_SEC0
+		
+		LD			A,T_HEAT_ON
+		HSUBIA		D'250'
+		SNZB		C
+		INCR		T_HEAT_ON
+		
+		LD			A,T_FAN_DELAY
+		HSUBIA		D'250'
+		SNZB		C
+		INCR		T_FAN_DELAY
+		
+		INCR		T_TEMP_HOLD0
+		LD			A,T_TEMP_HOLD
+		HSUBIA		D'10'
+		SNZB		C
+		JP			TIMER_JUD
+		CLR			T_TEMP_HOLD0
+		INCR		T_TEMP_HOLD
+TIMER_JUD:		
+		INCR		T_SEC
+		NOP
+		LD			A,T_SEC
+		HSUBIA		D'240'
+		SNZB		C
+		JP			END_TIMER_JUD
+		CLR			T_SEC
+		INCR		T_MIN
+		NOP
+		HSUBIA		D'60'
+		JP			END_TIMER_JUD
+		CLR			T_MIN
+		LD			A,T_HOUR
+		HSUBIA		D'1'
+		SNZB		C
+		JP			END_TIMER_JUD
+		DECR		T_HOUR
+		NOP
+		LD			A,T_HOUR
+		HSUBIA		D'1'
+		SZB			C
+		JP			END_TIMER_JUD
+;------------------------------------------------------------------;		
+TIMER_SUB1:		
+		INCR		T250MS_TIMER
+		LD			A,T250MS_TIMER
+		HSUBIA		D'250'
+		SNZB		C
+		JP			BUZ_TIMER
+		CLR			T250MS_TIMER
+		INCR		LIGHON
+		NOP
+		SETB		F_ADC_FIRST				;0.25MS前转换出来的温度值不作判断直接赋值给T_ROOM_F
+END_TIMER_SUB1:
+;------------------------------------------------------------------;	
+BUZ_TIMER:
+		SNZB		F_BUZ
+		JP			END_BUZ_TIMER
+		INCR		T_BUZ
+		NOP
+		LD			A,T_BUZ
+		HSUBIA		D'160'					;响0.16s
+		SZB			C
+		CLRB		F_BUZ
+END_BUZ_TIMER:
+;------------------------------------------------------------------;		
+END_TIMER_JUD:
+		RET
 ;******************************************************************;
 ;******************************************************************;
 ;******************************************************************;
@@ -271,16 +418,15 @@ MAINLOOP:
 ;******************************************************************;
 SCANKEY:
 		LD			A,DISP_NUM
-		XORIA		D'3'
+		XORIA		D'1'
 		SNZB		Z
 		JP			END_SCANKEY
 ;------------------------------------------------------------------;
-		LDIA		B'00010010'
-		LD			P1CH,A
-		LDIA		B'01001000'
-		LD			P1CL,A
-		LDIA		B'10000000'
-		LD			P2C,A
+		LDIA		B'00011010'				;P0,3--SW_OSC	P0,2--ZERO_IN	P0,1/0--OUT_HIG/LOW
+		LD			P0CL,A
+		LDIA		B'10100101'				;P0,7/6--OUT_SCL/SDA	P0,5/4--NONE
+		LD			P0CH,A
+		
 		CLR			KEY_VALUE
 		NOP
 		NOP
@@ -296,39 +442,23 @@ SCANKEY:
 		NOP
 		NOP
 		NOP
-		NOP
-		NOP
-		NOP
-		NOP
-		NOP
-		NOP
-		SNZB		LED_SEG4
-		SETB		KEY_VALUE,1			;POWER
-		SNZB		LED_SEG5
-		SETB		KEY_VALUE,2			;TIMER
-		SNZB		LED_SEG7
-		SETB		KEY_VALUE,3			;TEMP
+		SNZB		SW_POWER
+		SETB		KEY_VALUE,1
+		SNZB		SW_TIMER
+		SETB		KEY_VALUE,2
+		SNZB		SW_TEMP
+		SETB		KEY_VALUE,3
 		SNZB		SW_OSC
-		SETB		KEY_VALUE,4			;OSC
-		NOP
-		NOP
-		NOP
-		LDIA		B'10010010'
-		LD			P1CH,A
-		LDIA		B'01101010'
-		LD			P1CL,A
-		NOP
-		NOP
-		NOP
+		SETB		KEY_VALUE,4
 ;------------------------------------------------------------------;
 KEY_JUD:
 		LD			A,KEY_VALUE
 		XORA		KEY_VALUE1
 		SZB			Z
 		JP			KEY_JUD1
-		CLR			KEY_DELAY
 		LD			A,KEY_VALUE
 		LD			KEY_VALUE1,A
+		CLR			KEY_DELAY
 KEY_JUD1:
 		LD			A,KEY_DELAY
 		HSUBIA		D'5'
@@ -342,7 +472,8 @@ KEY_JUD2:
 		SZB			C
 		JP			ON_KEY
 NO_KEY:
-		CLR			OLDKEY_TIMER
+		CLR			KEY_DELAY
+		CLR			T_OLDKEY
 		CLRB		F_ONKEY
 		JP			END_SCANKEY
 ON_KEY:
@@ -355,14 +486,17 @@ ON_KEY:
 		XORIA		02H
 		SZB			Z
 		JP			KEY_ONOFF
+		
 		LD			A,KEY_VALUE
 		XORIA		04H
 		SZB			Z
 		JP			KEY_TIMER
+
 		LD			A,KEY_VALUE
 		XORIA		08H
 		SZB			Z
 		JP			KEY_TEMP
+		
 		LD			A,KEY_VALUE
 		XORIA		10H
 		SZB			Z
@@ -371,65 +505,83 @@ ON_KEY:
 OLD_KEY:
 		SNZB		F_ONOFF
 		JP			END_OLDKEY
-		LD			A,OLDKEY_TIMER
+		LD			A,T_OLDKEY
 		HSUBIA		D'250'
 		SNZB		C
-		INCR		OLDKEY_TIMER
+		INCR		T_OLDKEY
 		LD			A,KEY_VALUE
 		XORIA		02H
 		SZB			Z
 		JP			KEY_PROTECT
+		
 		LD			A,KEY_VALUE
 		XORIA		04H
 		SZB			Z
 		JP			KEY_F_TIMER
+		
 		LD			A,KEY_VALUE
 		XORIA		08H
 		SZB			Z
 		JP			KEY_F_TEMP
 END_OLDKEY:
-		CLR			OLDKEY_TIMER
+		CLR			T_OLDKEY
 		JP			END_SCANKEY
-;------------------------------------------------------------------;
-;------------------------------------------------------------------;
-;------------------------------------------------------------------;
-;------------------------------------------------------------------;
 ;------------------------------------------------------------------;
 KEY_ONOFF:
 		SZB			F_ONOFF
-		JP			MODE_SWITCH
-KEY_ON:
-		CLRB		F_TEMP_HOLD
+		JP			MODE_CHANGE
+MODE_HIGH:
+		SETB		F_TEMP_FIRST
 		SETB		F_ONOFF
+		CLRB		F_AUTO
 		CLRB		F_OSC
+		CLRB		F_TEMP_HOLD
+		CLR			T_TEMP_HOLD0
+		CLR			T_TEMP_HOLD
+		CLR			HEAT_SETUP
+		CLR			TEMP_SETUP
 		CLR			T_HOUR
 		CLR			T_HEAT_ON
 		CLR			T_SEC0
-		CLR			HEAT_WORK
-		CLR			HEAT_SETUP
-		LDIA		D'3'
-		LD			TEMP_SETUP,A
+		CLR			LIGHON
+		CLR			T_SETUP_LOW
+		CLR			T_SETUP_MAX
 		JP			KBUZ
-MODE_SWITCH:
-		CLR			T_HEAT_ON
+MODE_CHANGE:
 		INCR		HEAT_SETUP
 		NOP
 		LD			A,HEAT_SETUP
-		HSUBIA		D'3'
+		HSUBIA		D'2'					;0-HIG 1-LOW 2-OFF
 		SNZB		C
-		JP			KBUZ
+		JP			END_KEY_ONOFF
 		CLRB		F_ONOFF
+		CLRB		F_OSC
 		CLR			T_HOUR
+END_KEY_ONOFF:
+		CLR			LIGHON
+		CLR			T_HEAT_ON
+		CLR			TEMP_SETUP
+		CLR			T_SETUP_LOW
+		CLR			T_SETUP_MAX
+		CLR			T_TEMP_HOLD0
+		CLR			T_TEMP_HOLD
+		CLRB		F_TEMP_HOLD
+		CLRB		F_AUTO
 		JP			KBUZ
 KEY_PROTECT:
 		SNZB		F_ONOFF
 		JP			END_SCANKEY
 		LD			A,T_SEC0
-		XORIA		D'16'
+		XORIA		D'40'
 		SNZB		Z
 		JP			END_SCANKEY
 		INCR		T_SEC0
+		LD			A,HEAT_SETUP			;防止开机后迅速再次长按电源键进入130F模式
+		XORIA		01H						;130F模式只能通过长按电源键开机,并持续不松手4s才能进入
+		SZB			Z
+		JP			END_SCANKEY
 		SETB		F_TEMP_130F
+		JP			KBUZ
 ;------------------------------------------------------------------;
 ;------------------------------------------------------------------;
 ;------------------------------------------------------------------;
@@ -439,31 +591,32 @@ KEY_TIMER:
 		SNZB		F_ONOFF
 		JP			END_SCANKEY
 		INCR		T_HOUR
+		NOP
 		LD			A,T_HOUR
-		HSUBIA		D'9'
+		HSUBIA		D'8'
 		SZB			C
 		CLR			T_HOUR
 		CLR			T_SEC
 		CLR			T_MIN
-		CLR			T250MS_TIMER1
+		CLR			T250MS_TIMER
 		JP			KBUZ
 KEY_F_TIMER:
 		SNZB		F_ONOFF
 		JP			END_SCANKEY
-		LD			A,OLDKEY_TIMER
-		HSUBIA		D'62'
+		LD			A,T_OLDKEY
+		HSUBIA		D'150'
 		SNZB		C
 		JP			END_SCANKEY
-		CLR			OLDKEY_TIMER
-END_KEY_F_TIME:
+		CLR			T_OLDKEY
+END_KEY_F_TIMER:
 		LD			A,T_HOUR
-		HSUBIA		D'8'
+		HSUBIA		D'7'
 		SZB			C
 		JP			END_SCANKEY
 		INCR		T_HOUR
 		CLR			T_SEC
 		CLR			T_MIN
-		CLR			T250MS_TIMER1
+		CLR			T250MS_TIMER
 		JP			KBUZ
 ;------------------------------------------------------------------;
 ;------------------------------------------------------------------;
@@ -473,33 +626,120 @@ END_KEY_F_TIME:
 KEY_TEMP:
 		SNZB		F_ONOFF
 		JP			END_SCANKEY
+		SETB		F_AUTO
+		CLR			LIGHON
+MODE_JUD:
+		LD			A,HEAT_SETUP
+		XORIA		01H
+		SZB			Z
+		JP			MODE_LOW				;低档状态
+		SZB			F_TEMP_FIRST			;判断切换到AUTO模式后是否第一次按下TEMP键
+		JP			TEMP_FIRST
 		INCR		TEMP_SETUP
+		NOP
 		LD			A,TEMP_SETUP
 		HSUBIA		D'7'
 		SZB			C
+		JP			MODE_MAX
+		JP			END_KEY_TEMP
+TEMP_FIRST:
+		LDIA		04H						;第一次按下,温度设置为75F
+		LD			TEMP_SETUP,A
+		CLRB		F_TEMP_FIRST
+		JP			END_KEY_TEMP
+MODE_LOW:
+		CLR			HEAT_SETUP				;切换高档、温度设置为75F
+		LDIA		04H
+		LD			TEMP_SETUP,A
+		JP			END_KEY_TEMP
+MODE_MAX:
+		CLRB		F_AUTO					
+		CLRB		F_TEMP_HOLD
+		CLR			T_TEMP_HOLD
+		CLR			T_TEMP_HOLD0
 		CLR 		TEMP_SETUP
+		CLR			T_SETUP_LOW
+		CLR			T_SETUP_MAX
 		JP			KBUZ
 KEY_F_TEMP:
 		SNZB		F_ONOFF
 		JP			END_SCANKEY
-		LD			A,OLDKEY_TIMER
-		HSUBIA		D'62'
+		LD			A,T_OLDKEY
+		HSUBIA		D'150'
 		SNZB		C
 		JP			END_SCANKEY
-		CLR			OLDKEY_TIMER
+		CLR			T_OLDKEY
 END_KEY_F_TEMP:
 		LD			A,TEMP_SETUP
-		HSUBIA		D'7'
+		HSUBIA		D'6'
 		SZB			C
 		JP			END_SCANKEY
+		CLR			LIGHON
+		SETB		F_AUTO
 		INCR		TEMP_SETUP
+END_KEY_TEMP:									;温度上下限赋值
+		LD			A,TEMP_SETUP
+		XORIA		D'01'					;60
+		SZB			Z
+		JP			TEMP_60
+		LD			A,TEMP_SETUP
+		XORIA		D'02'					;65
+		SZB			Z
+		JP			TEMP_65
+		LD			A,TEMP_SETUP
+		XORIA		D'03'					;70
+		SZB			Z
+		JP			TEMP_70
+		LD			A,TEMP_SETUP
+		XORIA		D'04'					;75
+		SZB			Z
+		JP			TEMP_75
+		LD			A,TEMP_SETUP
+		XORIA		D'05'					;80
+		SZB			Z
+		JP			TEMP_80
+		LD			A,TEMP_SETUP
+		XORIA		D'06'					;85
+		SZB			Z
+		JP			TEMP_85									
 		JP			KBUZ
+TEMP_60:
+		LDIA		D'60'
+		JP			END_KEY_TEMP0
+TEMP_65:
+		LDIA		D'65'
+		JP			END_KEY_TEMP0
+TEMP_70:
+		LDIA		D'70'
+		JP			END_KEY_TEMP0
+TEMP_75:
+		LDIA		D'75'
+		JP			END_KEY_TEMP0
+TEMP_80:
+		LDIA		D'80'
+		JP			END_KEY_TEMP0
+TEMP_85:
+		LDIA		D'85'		
+END_KEY_TEMP0:		
+		HSUBIA		D'1'
+		LD			T_SETUP_LOW,A
+		LD			T_SETUP_MAX,A
+		LDIA		D'3'
+		ADDR		T_SETUP_MAX
+		LD			A,T_ROOM_F
+		HSUBA		T_SETUP_MAX
+		SZB			C
+		JP			KBUZ		
+		CLRB		F_TEMP_HOLD
+		CLR			T_TEMP_HOLD0
+		CLR			T_TEMP_HOLD
+		JP			KBUZ	
 ;------------------------------------------------------------------;
 ;------------------------------------------------------------------;
 ;------------------------------------------------------------------;
 ;------------------------------------------------------------------;
 ;------------------------------------------------------------------;
-KEY_OSC:
+KEY_OSC:		
 		SNZB		F_ONOFF
 		JP			END_SCANKEY
 		SNZB		F_OSC
@@ -509,229 +749,310 @@ KEY_OSC:
 OSC_ON:
 		SETB		F_OSC
 		JP			KBUZ
-;------------------------------------------------------------------;
+;------------------------------------------------------------------;		
 KBUZ:
 		CLR			T_BUZ
-		SETB		F_BUZ
+		SETB		F_BUZ		
+;------------------------------------------------------------------;		
 END_SCANKEY:
-		RET
+		RET		
 ;******************************************************************;
 ;******************************************************************;
 ;******************************************************************;
 ;******************************************************************;
-;******************************************************************;
-TIMER_SUB:
-		INCR		DISP_NUM
-		NOP
-		LD			A,DISP_NUM
-		HSUBIA		D'6'
-		SZB			C
-		CLR			DISP_NUM
+;******************************************************************;		
+DISPLAY:
 		LD			A,DISP_NUM
 		XORIA		D'2'
 		SNZB		Z
-		JP			TIMER_SUB0
-ZERO_JUD:
-
-
-
-END_ZERO_JUD:
-;------------------------------------------------------------------;
-TIMER_SUB0:
-		INCR		T100MS_TIMER
-		LD			A,T100MS_TIMER
-		HSUBIA		D'100'
-		SNZB		C
-		JP			TIMER_SUB1
-T_05SEC:
-		CLR			T100MS_TIMER
-		LD			A,T_SEC0
-		HSUBIA		D'250'
-		SNZB		C
-		INCR		T_SEC0
-
-		LD			A,T_HEAT_ON
-		HSUBIA		D'250'
-		SNZB		C
-		INCR		T_HEAT_ON
-
-		LD			A,T_FAN_DELAY
-		HSUBIA		D'250'
-		SNZB		C
-		INCR		T_FAN_DELAY
-T_05SEC1:
-		INCR		T_TEMP_HOLD0
-		LD			A,T_TEMP_HOLD0
-		HSUBIA		D'10'
-		SNZB		C
-		JP			T_05SEC2
-		CLR			T_TEMP_HOLD0
-		INCR		T_TEMP_HOLD
-T_05SEC2:
-;------------------------------------------------------------------;
-TIMER_JUD:
-		INCR		T_SEC
-		LD			A,T_SEC
-		HSUBIA		D'240'
-		SNZB		C
-		JP			END_TIMER_JUD
-		CLR			T_SEC
-		INCR		T_MIN
-		HSUBIA		D'60'
-		JP			END_TIMER_JUD
-		CLR			T_MIN
-		LD			A,T_HOUR
-		HSUBIA		D'1'
-		SNZB		C
-		JP			END_TIMER_JUD
-		DECR		T_HOUR
-		LD			A,T_HOUR
-		HSUBIA		D'1'
-		SZB			C
-		JP			END_TIMER_JUD
-		CLRB		F_ONOFF
-END_TIMER_JUD:
-;------------------------------------------------------------------;
-TIMER_SUB1:
-		INCR		T250MS_TIMER1
-		LD			A,T250MS_TIMER1
-		HSUBIA		D'250'
-		SNZB		C
-		JP			END_TIMER_SUB1
-		CLR			T250MS_TIMER1
-		INCR		LIGHON
-		NOP
-		SETB		F_ADC_FIRST
-END_TIMER_SUB1:
-;------------------------------------------------------------------;
-BUZ_TIMER:
-		SNZB		F_BUZ
-		JP			END_BUZ_TIMER
-		INCR		T_BUZ
-		NOP
-		LD			A,T_BUZ
-		HSUBIA		D'160'
-		SZB			C
-		CLRB		F_BUZ
-END_BUZ_TIMER:		
-;------------------------------------------------------------------;
-END_TIMER_SUB:
-		RET
-;******************************************************************;
-;******************************************************************;
-;******************************************************************;
-;******************************************************************;
-;******************************************************************;
-DISPLAY:
-		CLRB		LED_SEG1
-		CLRB		LED_SEG2
-		CLRB		LED_SEG3
-		CLRB		LED_SEG4
-		CLRB		LED_SEG5
-		CLRB		LED_SEG6
-		CLRB		LED_SEG7
-		SETB		LED_COM1
-		SETB		LED_COM2
-		LD			A,DISP_NUM
-		XORIA		D'3'
-		SNZB		Z
 		JP			END_DISPLAY
 ;------------------------------------------------------------------;
-		INCR		LEDN
-		LD			A,LEDN
-		HSUBIA		D'2'
-		SZB			C
-		CLR			LEDN
-		LD			A,LEDN
-		ADDR		PCL
-		JP			BUF_DISP
-		;JP			TEMP_DISP
+		CLR			LEDTR1
+		CLR			LEDTR2
+DISP_DATA:
+		SZB			F_NOPOWER
 		JP			END_DISPLAY
-;------------------------------------------------------------------;		
-BUF_DISP:
-		CLRB		LED_COM1
-		SZB			T_HOUR,0				;TIMER
-		SETB		LED_SEG7
+		SZB			F_POWER_LOW
+		JP			END_DISPLAY
+		SNZB		F_PROTECT
+		JP			DISP_DATA1
+		SZB			LIGHON,1
+		JP			DISP_LED
+DISP_ERR:
+		SETB		LEDTR1,3
+		SETB		LEDTR1,2
+		JP			DISP_LED
+DISP_DATA1:
+		SNZB		F_ONOFF
+		JP			DISP_LED
+		;TR1
+		SZB			T_HOUR,0
+		SETB		LEDTR1,4				;1H
 		SZB			T_HOUR,1
-		SETB		LED_SEG6
+		SETB		LEDTR1,5				;2H
 		SZB			T_HOUR,2
-		SETB		LED_SEG5
+		SETB		LEDTR1,6				;4H
 		LD			A,HEAT_SETUP
-		HSUBIA		D'1'
-		SNZB		C
-		JP			HIGH_DISP
-		SETB		LED_SEG3
-		JP			OSC_DISP
-HIGH_DISP:
-		SETB		LED_SEG4
-OSC_DISP:
+		XORIA		00H
+		SZB			Z
+		SETB		LEDTR1,3				;HIG
+		LD			A,HEAT_SETUP
+		XORIA		01H
+		SZB			Z
+		SETB		LEDTR1,2				;LOW
+		SZB			F_TEMP_HOLD
+		JP			DISP_TR2
 		SZB			F_OSC
-		SETB		LED_SEG2
-		JP			END_DISPLAY
-;------------------------------------------------------------------;
-TEMP_DISP:
-		CLRB		LED_COM2
+		SETB		LEDTR1,0				;OSC
+DISP_TR2:					;TR2
 		LD			A,TEMP_SETUP
-		ADDR		PCL
-		JP			TEMP_60
-		JP			TEMP_65
-		JP			TEMP_70
-		JP			TEMP_MAX
-		JP			TEMP_75
-		JP			TEMP_80
-		JP			TEMP_85
-		JP			TEMP_MAX
-TEMP_60:
-		SETB		LED_SEG5
-		JP			END_DISPLAY
-TEMP_65:
-		SETB		LED_SEG6
-		LDIA		65H
-		LD			TEMP_WORK,A
-		JP			END_DISPLAY
-TEMP_70:
-		SETB		LED_SEG4
-		LDIA		70H
-		LD			TEMP_WORK,A
-		JP			END_DISPLAY
-TEMP_75:
-		SETB		LED_SEG7
-		LDIA		75H
-		LD			TEMP_WORK,A
-		JP			END_DISPLAY
-TEMP_80:
-		SETB		LED_SEG3
-		LDIA		80H
-		LD			TEMP_WORK,A
-		JP			END_DISPLAY
-TEMP_85:
-		SETB		LED_SEG2
-		LDIA		85H
-		LD			TEMP_WORK,A
-		JP			END_DISPLAY
-TEMP_MAX:
-		SETB		LED_SEG1
-;------------------------------------------------------------------;
+		XORIA		00H						;MAX
+		SNZB		Z
+		JP			DISP_TEMP
+MAX_DISP:
+		SNZB		LIGHON,1
+		SETB		LEDTR2,0
+DISP_TEMP:
+		SZB			F_TEMP_HOLD
+		JP			DISP_STEADY
+		SZB			LIGHON,1
+		JP			DISP_LED
+DISP_STEADY:		
+		LD			A,TEMP_SETUP
+		XORIA		D'01'					;60
+		SZB			Z
+		SETB		LEDTR2,6
+		LD			A,TEMP_SETUP
+		XORIA		D'02'					;65
+		SZB			Z
+		SETB		LEDTR2,7
+		LD			A,TEMP_SETUP
+		XORIA		D'03'					;70
+		SZB			Z
+		SETB		LEDTR2,5		
+		LD			A,TEMP_SETUP
+		XORIA		D'04'					;75
+		SZB			Z
+		SETB		LEDTR2,4
+		LD			A,TEMP_SETUP
+		XORIA		D'05'					;80
+		SZB			Z
+		SETB		LEDTR2,3
+		LD			A,TEMP_SETUP
+		XORIA		D'06'					;85
+		SZB			Z
+		SETB		LEDTR2,2
+;------------------------------------------------------------------;		
+DISP_LED:
+		CLRB		OUT_SCL
+		CLRB		OUT_SDA
+		LDIA		B'10000000'
+		ORR			P0CH
+		NOP
+		NOP
+		CALL		I2C_START
+		LDIA		6CH
+		CALL		TRANSING
+		LD			A,LEDTR1
+		CALL		TRANSING
+		CALL		I2C_STOP
+		CALL		I2C_START
+		LDIA		6EH
+		CALL		TRANSING
+		LD			A,LEDTR2
+		CALL		TRANSING
+		CALL		I2C_STOP
+		CALL		I2C_START
+		LDIA		48H
+		CALL		TRANSING
+		LDIA		01H						;系统使能,八段显示,4级亮度
+		CALL		TRANSING
+		CALL		I2C_STOP
 END_DISPLAY:
 		RET
 ;******************************************************************;
 ;******************************************************************;
+;*********************AIP650写指令/数据处理子程序*******************;
 ;******************************************************************;
-;******************************************************************;
-;******************************************************************;
-WORK_SUB:
-		
-		
-		
-		
-END_WORK_SUB:
+;******************************************************************;		
+TRANSING:
+		LD			DSP_BUF,A
+		LDIA		D'8'
+		LD			BITNUM,A
+LBITL:	
+		CLRB		OUT_SCL
+		NOP	
+		NOP	
+		NOP	
+		NOP	
+		NOP	
+		NOP	
+		RLCR		DSP_BUF
+		SZB			C
+		JP			LBIT1
+LBIT0:	
+		CLRB		OUT_SDA
+		NOP	
+		NOP	
+		NOP	
+		NOP	
+		NOP	
+		NOP	
+		JP			LRL
+LBIT1:	
+		SETB		OUT_SDA
+		NOP	
+		NOP	
+		NOP	
+		NOP	
+		NOP	
+		NOP	
+LRL:	
+		SETB		OUT_SCL
+		NOP	
+		NOP	
+		DECR		BITNUM
+		NOP	
+		LD			A,BITNUM
+		HSUBIA		D'1'
+		SZB			C
+		JP			LBITL
+		CLRB		OUT_SCL
+		LDIA		B'00111111'				;将时序口转换为输入状态,发送完数据后进入结束延时
+		ANDR		P0CH
+		NOP	
+		NOP	
+		NOP	
+		NOP	
+TRANSING1:	
+		SNZB		OUT_SDA
+		JP			END_TRANSING
+		INCR		WAIT_TIME1
+		NOP	
+		LD			A,WAIT_TIME1
+		HSUBIA		D'20'
+		SNZB		C
+		JP			TRANSING1
+		CLR			WAIT_TIME1
+END_TRANSING:	
+		CLR     	DSP_BUF
+		SETB		OUT_SCL
+		LDIA		B'10000000'				;将时序口转换为输出状态,方便下次发送数据
+		ORR			P0CH
+		RET		
+;******************************************************************;		
+I2C_START:
+		CLRB		OUT_SCL
+		SETB		OUT_SDA
+		SETB		OUT_SCL
+		NOP
+		NOP
+		NOP
+		NOP
+		NOP
+		CLRB		OUT_SDA
+		NOP
+		NOP
+		CLRB		OUT_SCL
+		RET
+;******************************************************************;		
+I2C_STOP:
+		CLRB		OUT_SCL
+		CLRB		OUT_SDA
+		SETB		OUT_SCL
+		NOP
+		NOP
+		NOP
+		NOP
+		NOP
+		SETB		OUT_SDA
+		NOP
+		NOP
+		CLRB		OUT_SCL
 		RET
 ;******************************************************************;
 ;******************************************************************;
 ;******************************************************************;
 ;******************************************************************;
+;******************************************************************;		
+WORK_SUB:
+		LD			A,DISP_NUM
+		XORIA		D'3'
+		SNZB		Z
+		JP			END_WORK_SUB
+		SZB			F_NOPOWER
+		JP			SHUT_OFF
+		SZB			F_POWER_LOW
+		JP			WORK_OFF
+		SZB			F_PROTECT
+		JP			WORK_OFF
+		SZB			F_ONOFF
+		JP			WORK_JUD
+WORK_OFF:
+		CLRB		F_ONOFF
+SHUT_OFF:
+		SETB		OUT_HIG
+		SETB		OUT_LOW
+		SETB		OUT_FAN
+		SETB		OUT_OSC
+		CLR			T_HEAT_ON
+		JP			END_WORK_SUB
+;------------------------------------------------------------------;
+WORK_JUD:
+		SZB			F_AUTO
+		JP			WORK_AUTO
+WORK_NORMAL:
+		LD			A,HEAT_SETUP
+		ADDR		PCL
+		JP			WORK_HIG
+		JP			WORK_LOW
+		JP			WORK_OFF
+WORK_AUTO:
+		LD			A,HEAT_WORK
+		ADDR		PCL
+		JP			WORK_HIG
+		JP			WORK_LOW
+		JP			WORK_STOP
+WORK_STOP:
+		SETB		OUT_HIG
+		SETB		OUT_LOW
+		SETB		OUT_OSC
+		
+		CLR			T_HEAT_ON
+		LD			A,T_FAN_DELAY
+		HSUBIA		D'150'
+		SZB			C
+		SETB		OUT_FAN
+		JP			END_WORK_SUB
+WORK_LOW:
+		SETB		OUT_HIG
+		CLRB		OUT_FAN
+		CLRB		OUT_LOW
+		CLR			T_FAN_DELAY
+		JP			WORK_OSC_MODE
+WORK_HIG:
+		CLRB		OUT_FAN
+		CLRB		OUT_LOW
+		CLR			T_FAN_DELAY
+		LD			A,T_HEAT_ON
+		HSUBIA		D'50'
+		SNZB		C
+		JP			WORK_OSC_MODE
+		CLRB		OUT_HIG
+WORK_OSC_MODE:
+		SZB			F_OSC
+		CLRB		OUT_OSC
+		SNZB		F_OSC
+		SETB		OUT_OSC
+;------------------------------------------------------------------;		
+END_WORK_SUB:
+		RET		
 ;******************************************************************;
-ADC_GET:
+;******************************************************************;
+;******************************************************************;
+;******************************************************************;
+;******************************************************************;		
+ADC_GET:		
 		SETB		SYS_GEN,ADC_EN
 		NOP
 		NOP
@@ -752,7 +1073,6 @@ SCANAD_WAIT1:
 		ADDCR		NTC_RAM2
 DATA_PROC:
 		INCR		ADC_NUM
-		NOP
 		LD			A,ADC_NUM
 		XORIA		D'0'
 		SNZB		Z
@@ -768,15 +1088,15 @@ END_ADC_GET:
 ;******************************************************************;
 ;******************************************************************;
 ;******************************************************************;
-;******************************************************************;
+;******************************************************************;		
 SENSOR_SUB:
 		LD			A,DISP_NUM
-		XORIA		D'1'
+		XORIA		D'3'
 		SNZB		Z
 		JP			END_SENSOR_SUB
 TEMP_PROC:
 		LD			A,NTC_RAM
-		HSUBIA		D'250'
+		HSUBIA		D'205'
 		SZB			C
 		JP			OVER_140F
 		LD			A,NTC_RAM
@@ -801,10 +1121,10 @@ TEMP_PROC1:
 		LD			TABLE_SPH,A
 		TABLEA
 		LD			T_ROOM_BUF,A
-		DECR		T_ROOM_BUF
+		DECR		T_ROOM_BUF				;温度补偿
 		DECR		T_ROOM_BUF
 TEMP_PROC2:
-		INCR		OVER_CNT1
+		INCR		OVER_CNT1				;温度变化计时(连续自增20次仍然未被清零)
 		SNZB		F_ADC_FIRST
 		JP			TEMP_PROC20
 		LD			A,T_ROOM_F
@@ -817,22 +1137,23 @@ TEMP_PROC20:
 		CLR			OVER_CNT1
 		JP			TEMP_PROC3
 TEMP_PROC21:
-		LD			A,T_ROOM_BUF
-		HSUBIA		T_ROOM_F
+		LD			A,T_ROOM_BUF			;新值减旧值,判断温度是上升还是降低
+		HSUBA		T_ROOM_F
 		SNZB		C
 		JP			TEMP_PROC23
 		LD			A,T_ROOM_F
-		HSUBIA		T_ROOM_BUF
+		HSUBA		T_ROOM_BUF
 		SNZB		C
 		JP			TEMP_PROC22
 		CLR			OVER_CNT1
-		JP			TEMP_PROC23
+		JP			TEMP_PROC3				;值不变,不作判断,将OVER_CNT1计时清零
 TEMP_PROC22:
 		LD			A,OVER_CNT1
 		HSUBIA		D'20'
 		SNZB		C
 		JP			TEMP_PROC3
 		INCR		T_ROOM_F
+		NOP
 		CLR			OVER_CNT1
 		JP			TEMP_PROC3
 TEMP_PROC23:
@@ -842,76 +1163,77 @@ TEMP_PROC23:
 		JP			TEMP_PROC3
 		DECR		T_ROOM_F
 		CLR			OVER_CNT1
-		JP			TEMP_PROC3
-TEMP_PROC3:
+TEMP_PROC3:									; 温度锁住?
 		SZB			F_TEMP_HOLD
 		JP			TEMP_PROC4
 		LD			A,T_ROOM_F
 		LD			T_ROOM_REAL,A
 TEMP_PROC4:
 ;------------------------------------------------------------------;
-TEMP_OVER_JUD:						; 高温判断
+TEMP_OVER_JUD:							; 高温判断
 		LD   		A,T_ROOM_F
-		SNZB		F_TEMP_130F				;判断是否开启了130F度关闭设置,如果开启了,则按照130F超温标准
+		SNZB		F_TEMP_130F
 		JP			T_OVER100F
 T_OVER130F:									;高温,超130F
 		HSUBIA  	D'130'
 		SNZB  		C
-		JP			TEMP_NO_OVER			;未超过130F
-		JP      	TEMP_ERR				;超过
+		JP			TEMP_NO_OVER
+		JP      	TEMP_ERR
 T_OVER100F:									;高温,超100F
 		HSUBIA  	D'100'
 		SNZB  		C
 		JP      	TEMP_NO_OVER
-TEMP_ERR:		
-		INCR    	OVER_CNT2				;开始计时
-		SNZB		F_ONOFF					;判断超温时暖风机是否开启
+TEMP_ERR:	
+		INCR    	OVER_CNT2
+		SNZB		F_ONOFF
 		JP			TEMP_ERR2
-TEMP_ERR1:		
-		LD   		A,OVER_CNT2				;开启
-		HSUBIA  	D'60'					
-		SZB  		C						;超过60次计时仍然超温
-		SETB		F_PROTECT				;开启温度保护,闪烁显示88和高低风
-		JP			END_TEMP_OVER_JUD
-TEMP_ERR2:		
-		LD   		A,OVER_CNT2				;电源关闭时
-		HSUBIA  	D'150'					;周围温度过高,持续超过150次计时
+TEMP_ERR1:	
+		LD   		A,OVER_CNT2
+		HSUBIA  	D'60'
 		SZB  		C
-		SETB  		F_PROTECT				;开启温度保护,闪烁显示88和高低风
+		SETB		F_PROTECT
 		JP			END_TEMP_OVER_JUD
-TEMP_NO_OVER:		
-		CLR     	OVER_CNT2
+TEMP_ERR2:	
+		LD   		A,OVER_CNT2
+		HSUBIA  	D'150'
+		SZB  		C
+		SETB  		F_PROTECT
+		JP			END_TEMP_OVER_JUD
+TEMP_NO_OVER:	
+		CLR     	OVER_CNT2				;超温计时
 END_TEMP_OVER_JUD:
 ;------------------------------------------------------------------;
-TEMP_JUD:								; 工作温度判断
-		SNZB  		F_ONOFF
+TEMP_JUD:
+		SNZB		F_ONOFF
 		JP			END_TEMP_JUD
-TEMP_JUD_NOR:		
-		CLRB		F_TEMP_HOLD		; 高低档模式不会锁定温度
-		LD			A,HEAT_SETUP	
-		LD			HEAT_WORK,A		;把设定的档位值送到工作的档位
-		LD			HEAT_WORK_BUF,A	;储存到HEAT_WORK_BUF
-		JP      	END_TEMP_JUD
-TEMP_JUD_AUTO:		
-		LD			A,T_ROOM_DISP	;当前环境的温度与设定温度的最低值(其实就是当前设定的温度值)比较
+		SZB			F_AUTO
+		JP			TEMP_JUD_AUTO
+TEMP_JUD_NORMAL:
+		LD			A,HEAT_SETUP
+		LD			HEAT_WORK,A
+		LD			HEAT_WORK_BUF,A
+		CLRB		F_TEMP_HOLD
+		JP			END_TEMP_JUD
+TEMP_JUD_AUTO:
+		LD			A,T_ROOM_REAL
 		HSUBA		T_SETUP_LOW
 		SZB			C
-		JP			TEMP_JUD_AUTO2 	;当前环境温度值大于设定温度
-TEMP_JUD_AUTO1:								; <T_SETUP
-		CLR			HEAT_WORK_BUF	
-		LD			A,HEAT_WORK		;判断是高档还是低档
+		JP			TEMP_JUD_AUTO2
+TEMP_JUD_AUTO1:									; <T_SETUP
+		CLR			HEAT_WORK_BUF
+		LD			A,HEAT_WORK
 		HSUBIA		D'1'
 		SNZB		C
-		JP			END_TEMP_JUD_AUTO	;本身就是高档
-		CLR			HEAT_WORK		;本身是低档,变为高档
-		CLR			T_HEAT_ON		;低档切换高档,导通延时重新计算
 		JP			END_TEMP_JUD_AUTO
-TEMP_JUD_AUTO2:		
-		LD			A,T_ROOM_DISP
-		HSUBA		T_SETUP_MAX			; 数码管实际显示温度与T_SETUP_MAX比较
+		CLR			HEAT_WORK					; 切换到高档
+		CLR			T_HEAT_ON
+		JP			END_TEMP_JUD_AUTO
+TEMP_JUD_AUTO2:
+		LD			A,T_ROOM_REAL
+		HSUBA		T_SETUP_MAX
 		SNZB		C
-		JP			TEMP_JUD_AUTO3		; 如果小于T_SETUP_MAX(设定温度+3F)
-		LDIA		D'2'				; >T_SETUP+3F	大于设定温度3F以上
+		JP			TEMP_JUD_AUTO3
+		LDIA		D'2'						; >T_SETUP_MAX
 		LD			HEAT_WORK_BUF,A
 		LD			A,HEAT_WORK
 		HSUBIA		D'2'
@@ -919,28 +1241,27 @@ TEMP_JUD_AUTO2:
 		JP			END_TEMP_JUD_AUTO
 		LDIA		D'2'
 		LD			HEAT_WORK,A
-		SETB		F_TEMP_HOLD			;锁定温度
-		CLR			T_TEMP_HOLD0		;计一秒钟的变量
-		CLR			T_TEMP_HOLD			;清掉锁定温度计时
+		SETB		F_TEMP_HOLD
+		CLR			T_TEMP_HOLD0
+		CLR			T_TEMP_HOLD
 		JP			END_TEMP_JUD_AUTO
-TEMP_JUD_AUTO3:								; >=T_SETUP&<=T_SETUP+3F	大于设定温度但是不超过T_SETUP_MAX(T_SETUP+3F)
+TEMP_JUD_AUTO3:									; >=T_SETUP&<=T_SETUP_MAX
 		LDIA		D'1'
 		LD			HEAT_WORK_BUF,A
 		LD			A,HEAT_WORK
 		XORIA		D'1'
-		SZB			Z						;判断是否低档运行
+		SZB			Z
 		JP			END_TEMP_JUD_AUTO
 		LDIA		D'1'
-		LD			HEAT_WORK,A				;原本为高档运行,切换回低档
-		CLR			T_HEAT_ON				;清零换挡后的发热组件导通延时
+		LD			HEAT_WORK,A
+		CLR			T_HEAT_ON
 		JP			END_TEMP_JUD_AUTO
-END_TEMP_JUD_AUTO:					; OVER 4min+15s解锁
+END_TEMP_JUD_AUTO:
 		LD			A,T_TEMP_HOLD
 		HSUBIA		D'254'
-		SZB			C				; 一旦温度锁定,4分15秒之后才解锁
+		SZB			C
 		CLRB		F_TEMP_HOLD
 END_TEMP_JUD:
-;------------------------------------------------------------------;
 END_SENSOR_SUB:
 		RET
 ;******************************************************************;
@@ -948,7 +1269,7 @@ END_SENSOR_SUB:
 ;******************************************************************;
 ;******************************************************************;
 ;******************************************************************;
-		ORG     0710H		
+ ORG     0710H		
 TABLE_F:					;华氏度 R=10K
 		DW	D'32'		;58
 		DW	D'32'		;59  
@@ -1100,6 +1421,11 @@ TABLE_F:					;华氏度 R=10K
 		DW	D'140'		;205
 		DW	D'140'		;206
 		DW	D'140'		;207
+
+   	 	JP	RESET
+		END
+
+
+
 		
-		JP			RESET
-		END	
+		
