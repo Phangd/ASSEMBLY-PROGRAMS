@@ -7,10 +7,10 @@
 ;******************************************************************;
 ;******************************************************************;
 
-;工作RAM
+;����RAM
 		ACC_BUF			EQU 		?	       
 		STATUS_BUF		EQU 		?        
-		TCOUNT			EQU 		？	
+		TCOUNT			EQU 		��	
 		TEMP        	EQU         ?
 		TEMP1			EQU 		?
 		COUNT       	EQU         ?
@@ -46,7 +46,7 @@
 
 ;******************************************************************;
 ;******************************************************************;
-;端口声明
+;�˿�����
 		NTC			EQU		PORTA,RA0
 		OUT_LOW		EQU		PORTA,RA1
 		OSCL		EQU		PORTA,RA2
@@ -75,7 +75,7 @@
 ;******************************************************************;
 ;******************************************************************;
 
-;标志位声明
+;��־λ����
 		;FLAG1
 		F_ONOFF			EQU	FLAG0,0
 		F_BUZ			EQU	FLAG0,1
@@ -91,13 +91,13 @@
    		JP  		START
 		ORG 		04H
 ;------------------------------------------------------------------;
-        LD  		ACC_BUF,A			;中断现场保9护
+        LD  		ACC_BUF,A			;�ж��ֳ���9��
 		SWAPR		ACC_BUF
 		SWAPA		STATUS
 		LD  		STATUS_BUF,A
 ;------------------------------------------------------------------;
 INT_TMR2:
-		CLR 		PIR1			;清中断响应标志位
+		CLR 		PIR1			;���ж���Ӧ��־λ
 		INCR		TCOUNT
 ;---------------------------- BUZZER ------------------------------;
 		SNZB		F_BUZ
@@ -118,7 +118,7 @@ INT_EXIT:
 START:
 		NOP
 		CLRWDT
-;----------------------------初始化I/O-----------------------------;
+;----------------------------��ʼ��I/O-----------------------------;
 		LDIA		071H
 		LD			OSCCON,A
 		
@@ -152,10 +152,10 @@ START:
 
 		CLR			INTCON
 
-;-----------------------------清寄存器-----------------------------;
+;-----------------------------��Ĵ���-----------------------------;
 		CLRB		STATUS,IRP
-CLR_RAM：
-		LDIA		1FH					;从20H开始
+CLR_RAM��
+		LDIA		1FH					;��20H��ʼ
 		LD  		FSR,A
 CLR_RAM_LOOP
 		INCR		FSR
@@ -173,14 +173,14 @@ CLR_RAM_LOOP
 		ADDR		FSR
 		JP  		CLR_RAM_LOOP
 CLR_RAM_H:						
-		SZB 		STATUS,IRP			;判断是否已经是第3-4BANK
-		JP  		CLR_RAM_BACK		;已经是第3-4BANK,清RAM结束
-		SETB		STATUS,IRP			;不是3-4BANK,设置BANK标志位，开始清3-4BANK的RAM
+		SZB 		STATUS,IRP			;�ж��Ƿ��Ѿ��ǵ�3-4BANK
+		JP  		CLR_RAM_BACK		;�Ѿ��ǵ�3-4BANK,��RAM����
+		SETB		STATUS,IRP			;����3-4BANK,����BANK��־λ����ʼ��3-4BANK��RAM
 		JP  		CLR_RAM
 CLR_RAM_BACK:
 		CLRB		STATUS,IRP
 ;------------------------------------------------------------------;
-INIT_LOOP:						;上电延时9*256*256/2=300MS
+INIT_LOOP:						;�ϵ���ʱ9*256*256/2=300MS
 		NOP
 		NOP
 		NOP
@@ -195,20 +195,20 @@ INIT_LOOP:						;上电延时9*256*256/2=300MS
 		JP  		INIT_LOOP
 ;------------------------------------------------------------------;
 INIT_RAM:
-		LDIA		.250			;8M下125US
-		LD  		PR2,A			;TMR2设置成250US
+		LDIA		.250			;8M��125US
+		LD  		PR2,A			;TMR2���ó�250US
 		LDIA		B'00000100'
 		LD  		T2CON,A
 		LDIA		02H
 		LD			PIE1,A
 		LDIA		0C0H
-		LD  		INTCON,A		;定时2中断使能
+		LD  		INTCON,A		;��ʱ2�ж�ʹ��
 		
 ;******************************************************************;
 ;******************************************************************;
 ;******************************************************************;
 MAIN:
-		LDIA		.16					;125us*20=2.5ms一个主循环
+		LDIA		.16					;125us*20=2.5msһ����ѭ��
 		SUBA		TCOUNT
 		SNZB		STATUS,C
 		JP  		MAIN
@@ -216,17 +216,17 @@ MAIN:
 		CLRWDT
 MAIN_SUB:
 		;CALL		SET_SYS
-		CALL  		KSCAN           ;触摸扫描程序	
-		CALL        MAINK			;触摸处理程序
+		CALL  		KSCAN           ;����ɨ�����	
+		CALL        MAINK			;������������
 		CALL		DISPLAY_DATA
 		CALL		DISPLAY
 		CALL		TIMER_SUB
 		#if (CMS_DEBUG_MODE == 1)
-			CALL	SEND_TOUCHKEY	;触摸传数据	
+			CALL	SEND_TOUCHKEY	;����������	
 		#endif	
 		JP  		MAIN
 ;******************************************************************;
-;系统寄存器设置
+;ϵͳ�Ĵ�������
 ;******************************************************************;
 SET_SYS:		
  	    LDIA		B'10110001'
@@ -315,7 +315,7 @@ DISP_DATA:
 		JP			DISP_DATA4
 		JP			DISP_DATA3
 ;------------------------------------------------------------------;
-DISP_DATA1:							;时间设置显示
+DISP_DATA1:							;ʱ��������ʾ
 		SZB			FLASH,1
 		JP			DISP_DATA2
 		LD			A,T_HOUR
@@ -327,11 +327,11 @@ DISP_DATA1:							;时间设置显示
 		LD			LED_DATA2,A
 		JP			END_DISPLAY_DATA
 ;------------------------------------------------------------------;		
-DISP_DATA2:							;温度设置显示
+DISP_DATA2:							;�¶�������ʾ
 		
 		JP			END_DISPLAY_DATA
 ;------------------------------------------------------------------;		
-DISP_DATA3:							;档位显示	
+DISP_DATA3:							;��λ��ʾ	
 		LDIA		6BH
 		LD			LED_DATA1,A
 		LD			A,MODE
@@ -361,7 +361,7 @@ LOW_MODE:
 		LD			LED_DATA2,A
 		JP			END_DISPLAY_DATA
 ;------------------------------------------------------------------;
-DISP_DATA4:								;温度显示
+DISP_DATA4:								;�¶���ʾ
 		
 END_DISPLAY_DATA:
 		RET
@@ -466,7 +466,7 @@ DISP_LED:
 END_DISPLAY:
         RET
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;           AIP650写指令/数据处理子程序	      ;
+;           AIP650дָ��/���ݴ����ӳ���	      ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 TRANSING:
 		LD			DSP_BUF,A
@@ -534,7 +534,7 @@ END_TRANSING:
 		ANDR		TRISC
 		RET
 ;******************************************************************;
-I2C_START:						; 数据传输开始
+I2C_START:						; ���ݴ��俪ʼ
 		CLRB		SCL
 		SETB		SDA
 		SETB		SCL
@@ -548,7 +548,7 @@ I2C_START:						; 数据传输开始
 		CLRB		SCL
 		RET
 ;------------------------------------------------------------------;
-I2C_STOP:						; 数据传输结束
+I2C_STOP:						; ���ݴ������
 		CLRB		SCL
 		CLRB		SDA
 		SETB		SCL
@@ -563,8 +563,8 @@ I2C_STOP:						; 数据传输结束
 		RET		
 	
 ;******************************************************************;
-;根据KEYF和KEYF1判断有没有按键
-;当有多个按键的时候将错误标志位 "TK_FLAG,B_KERR" 置1
+;����KEYF��KEYF1�ж���û�а���
+;���ж��������ʱ�򽫴����־λ "TK_FLAG,B_KERR" ��1
 ;******************************************************************;
 MAINK:
 		LD			A,KEYF
@@ -575,7 +575,7 @@ MAINK:
 		JP			MAINK_NO
 		
 		LD			A,KEYF
-		XORA		KEYF_OLD		;相同
+		XORA		KEYF_OLD		;��ͬ
 		SZB			STATUS,Z
 		JP			MAINK_HIGH
 		
@@ -748,9 +748,9 @@ MAINK_NO:
 MAINK_BACK:
         RET
 ;******************************************************************;
-;调用按键库文件
+;���ð������ļ�
 ;******************************************************************;
-KSCAN：
+KSCAN��
 		#INCLUDE	"Touch_Kscan_Library.lib"
 ;******************************************************************;
 
